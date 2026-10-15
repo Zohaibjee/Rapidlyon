@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
 import { inquirySchema } from "@/lib/validation";
 import { siteConfig } from "@/data/site";
+import { isSameOriginRequest } from "@/lib/discovery-auth";
+import { readBoundedJson } from "@/lib/request-body";
+import { checkRateLimit, rateLimitFailure } from "@/lib/rate-limit";
 import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 export async function POST(request: Request) {
-  let body: unknown;
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ success: false, message: "Request origin could not be verified." }, { status: 403 });
+  }
 
-  try {
-    body = await request.json();
-  } catch {
+  const rateLimit = await checkRateLimit(request, "inquiries", 5, 60 * 60);
+  if (!rateLimit.allowed) return rateLimitFailure(rateLimit);
+
+  const requestBody = await readBoundedJson(request, 16 * 1024);
+  if (!requestBody.ok && requestBody.reason === "too_large") {
+    return NextResponse.json({ success: false, message: "The inquiry is too large." }, { status: 413 });
+  }
+  if (!requestBody.ok) {
     return NextResponse.json(
       {
         success: false,
@@ -16,6 +26,14 @@ export async function POST(request: Request) {
       },
       { status: 400 },
     );
+  }
+
+  const body = requestBody.value;
+  const honeypot = typeof body === "object" && body !== null && "companyWebsite" in body
+    ? (body as { companyWebsite?: unknown }).companyWebsite
+    : "";
+  if (typeof honeypot !== "string" || honeypot.length > 200 || honeypot) {
+    return NextResponse.json({ success: false, message: "The inquiry could not be processed." }, { status: 400 });
   }
 
   const parsed = inquirySchema.safeParse(body);

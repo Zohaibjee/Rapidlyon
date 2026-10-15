@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   }
 
   const query = new URLSearchParams({
-    select: "id,full_name,email,company,services,discovery_method,status,created_at",
+    select: "id,full_name,email,company,services,discovery_method,status,created_at,next_action,follow_up_at",
     order: "created_at.desc",
     limit: "200",
   });

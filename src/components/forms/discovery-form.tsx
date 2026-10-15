@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, FileUp, Trash2 } from "lucide-react";
 import {
   discoveryDraftSchema,
-  discoveryServices,
+  discoveryServiceCategories,
   discoverySubmissionSchema,
   type DiscoverySubmission,
 } from "@/lib/discovery";
@@ -28,12 +28,14 @@ const initialForm = {
   timeZone: "",
   industry: "",
   businessStage: "",
+  businessModel: "",
   services: [] as string[],
   answers: {} as Record<string, string | string[]>,
   projectOverview: "",
   objectives: "",
   mustHaveFeatures: "",
   niceToHaveFeatures: "",
+  constraints: "",
   budget: "",
   timeline: "",
   productUrl: "",
@@ -69,6 +71,7 @@ const serviceQuestions: Record<string, Question[]> = {
     { key: "websiteTechnical", label: "Any technical, accessibility, or hosting requirements?" },
   ],
   ux: [
+    { key: "designType", label: "What kind of product or design work are you exploring?", options: ["Product discovery or UX research", "SaaS / MVP product design", "Mobile app design", "Existing product redesign", "Not sure yet"] },
     { key: "uxChallenges", label: "What feels difficult or unclear in the current user experience?" },
     { key: "uxUsers", label: "Who are the target users and what are they trying to do?" },
     { key: "uxResearch", label: "What user research or evidence already exists?" },
@@ -92,29 +95,58 @@ const serviceQuestions: Record<string, Question[]> = {
     { key: "strategyChallenges", label: "What are the most important challenges or unknowns?" },
     { key: "strategyOutcomes", label: "What outcomes would make this engagement valuable?" },
   ],
+  seo: [
+    { key: "seoWebsite", label: "Which website or pages should be reviewed?", hint: "Share a URL if available." },
+    { key: "seoGoals", label: "What should people be able to find or do more easily?" },
+    { key: "seoConcerns", label: "Have you noticed specific search, metadata, performance, or accessibility issues?" },
+    { key: "seoPriorWork", label: "What SEO or optimization work has already been done?" },
+  ],
 };
 
-function answerGroups(services: string[]) {
+function answerGroups(services: string[], answers: Record<string, string | string[]>) {
   const groups: { title: string; questions: Question[] }[] = [];
-  if (services.includes("Website design") || services.includes("Website development")) {
+  if (services.includes("Website Development") || services.includes("Website design") || services.includes("Website development")) {
     groups.push({ title: "Website", questions: serviceQuestions.website });
   }
-  if (services.includes("UX research and UX/UI design") || services.includes("Existing product redesign")) {
+  const designSelected = services.includes("UX/UI & Product Design") || services.some((service) => [
+    "UX research and UX/UI design",
+    "Mobile app design",
+    "Product strategy and consulting",
+    "Existing product redesign",
+  ].includes(service));
+  if (designSelected) {
     groups.push({ title: "UX and product experience", questions: serviceQuestions.ux });
   }
-  if (services.includes("Mobile app design")) {
+  const designTypes = Array.isArray(answers.designType) ? answers.designType : [];
+  if (designTypes.includes("Mobile app design") || services.includes("Mobile app design")) {
     groups.push({ title: "Mobile app", questions: serviceQuestions.mobile });
   }
-  if (services.includes("Product strategy and consulting")) {
+  if (designTypes.includes("SaaS / MVP product design") || services.includes("Product strategy and consulting")) {
     groups.push({ title: "Product strategy", questions: serviceQuestions.strategy });
   }
-  if (services.includes("Other digital product requirements")) {
+  if (services.includes("SEO & Website Optimization")) {
+    groups.push({ title: "SEO and website optimization", questions: serviceQuestions.seo });
+  }
+  if (services.includes("Other / not sure yet") || services.includes("Other digital product requirements")) {
     groups.push({
       title: "Other requirements",
       questions: [{ key: "otherRequirements", label: "What other digital product requirements should we know about?" }],
     });
   }
   return groups;
+}
+
+function normalizeDraftServices(services: string[]) {
+  const legacyCategories: Record<string, string> = {
+    "UX research and UX/UI design": "UX/UI & Product Design",
+    "Website design": "Website Development",
+    "Website development": "Website Development",
+    "Mobile app design": "UX/UI & Product Design",
+    "Product strategy and consulting": "UX/UI & Product Design",
+    "Existing product redesign": "UX/UI & Product Design",
+    "Other digital product requirements": "Other / not sure yet",
+  };
+  return Array.from(new Set(services.map((service) => legacyCategories[service] || service)));
 }
 
 function isFilled(value: string | string[] | undefined) {
@@ -226,7 +258,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
         if (parsed.success) {
           // Restore browser-only draft data after hydration to avoid server/client mismatch.
           // eslint-disable-next-line react-hooks/set-state-in-effect
-          setForm({ ...initialForm, ...parsed.data, services: parsed.data.services ?? [], answers: parsed.data.answers ?? {} });
+          setForm({ ...initialForm, ...parsed.data, services: normalizeDraftServices(parsed.data.services ?? []), answers: parsed.data.answers ?? {} });
           setDraftMessage("Saved draft restored from this browser.");
         } else {
           setDraftMessage("The saved draft could not be restored. You can start a new request.");
@@ -251,7 +283,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
     }
   }, [form, status]);
 
-  const groups = useMemo(() => answerGroups(form.services), [form.services]);
+  const groups = useMemo(() => answerGroups(form.services, form.answers), [form.services, form.answers]);
   const currentStepTitle = stepTitles[step];
 
   const changeField = (name: string, value: string) => {
@@ -395,6 +427,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
               Clear saved draft
             </button>
           </div>
+          <TextArea name="businessModel" label="How does the business create value or earn revenue?" value={form.businessModel} onChange={changeField} hint="Optional. For example, subscriptions, product sales, services, or a marketplace." rows={3} />
         </div>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-divider" role="progressbar" aria-label="Discovery form progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
           <div className="h-full rounded-full bg-accent-strong transition-all" style={{ width: `${((step + 1) / stepTitles.length) * 100}%` }} />
@@ -454,7 +487,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
           <p className="mt-2 text-sm leading-6 text-body-muted">Choose all that apply. Your selection shapes the next questions.</p>
           {errors.services ? <p role="alert" className="mt-3 text-sm text-danger-strong">{errors.services}</p> : null}
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {discoveryServices.map((service) => {
+            {discoveryServiceCategories.map((service) => {
               const selected = form.services.includes(service);
               return (
                 <label key={service} className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${selected ? "border-ink bg-accent-pale" : "border-divider-strong hover:border-black/25"}`}>
@@ -516,10 +549,11 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
             <h2 className="text-2xl font-semibold">Project details</h2>
             <p className="mt-2 text-sm leading-6 text-body-muted">Only the project overview is required. Share estimates where you can; “not sure yet” is fine.</p>
           </div>
-          <TextArea name="projectOverview" label="Project overview" optional={false} value={form.projectOverview} onChange={changeField} error={errors.projectOverview} hint="What are you building or improving, and what prompted the project?" rows={5} />
+          <TextArea name="projectOverview" label="Project overview" optional={false} value={form.projectOverview} onChange={changeField} error={errors.projectOverview} hint="What are you building or improving, who is it for, and what prompted the project?" rows={5} />
           <TextArea name="objectives" label="Business objectives" value={form.objectives} onChange={changeField} hint="What would meaningful progress look like?" />
           <TextArea name="mustHaveFeatures" label="Must-have features" value={form.mustHaveFeatures} onChange={changeField} />
           <TextArea name="niceToHaveFeatures" label="Nice-to-have features" value={form.niceToHaveFeatures} onChange={changeField} />
+          <TextArea name="constraints" label="Constraints, dependencies, or additional requirements" value={form.constraints} onChange={changeField} hint="For example, existing systems, launch dependencies, accessibility needs, or approvals." />
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label htmlFor="discovery-budget" className="mb-2 block text-sm font-medium">Estimated budget <span className="font-normal text-muted">(optional)</span></label>
@@ -590,13 +624,13 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl font-semibold">Review your discovery request</h2>
-            <p className="mt-2 text-sm leading-6 text-body-muted">Use Edit to return to any section before you submit.</p>
+            <p className="mt-2 text-sm leading-6 text-body-muted">Use Edit to return to any section before you submit. This request is a lead, not an accepted project or binding quote.</p>
           </div>
           {[
-            { title: "Business information", step: 0, entries: [["Name", form.fullName], ["Email", form.email], ["Company", form.company], ["Website", form.website], ["Country / time zone", `${form.country} · ${form.timeZone}`], ["Industry / stage", `${form.industry} · ${form.businessStage}`]] },
+            { title: "Business information", step: 0, entries: [["Name", form.fullName], ["Email", form.email], ["Company", form.company], ["Website", form.website], ["Country / time zone", `${form.country} · ${form.timeZone}`], ["Industry / stage", `${form.industry} · ${form.businessStage}`], ["Business model", form.businessModel]] },
             { title: "Services", step: 1, entries: [["Selected services", form.services.join(", ")]] },
             { title: "Project questions", step: 2, entries: Object.entries(form.answers).map(([key, value]) => [key.replace(/([A-Z])/g, " $1"), Array.isArray(value) ? value.join(", ") : value]) },
-            { title: "Project details", step: 3, entries: [["Overview", form.projectOverview], ["Objectives", form.objectives], ["Must-have", form.mustHaveFeatures], ["Nice-to-have", form.niceToHaveFeatures], ["Budget / timeline", `${form.budget || "Not specified"} · ${form.timeline || "Not specified"}`], ["Existing URL", form.productUrl], ["References", form.competitorReferences], ["Attachments", files.map((file) => file.name).join(", ") || "None"]] },
+            { title: "Project details", step: 3, entries: [["Overview", form.projectOverview], ["Objectives", form.objectives], ["Must-have", form.mustHaveFeatures], ["Nice-to-have", form.niceToHaveFeatures], ["Constraints / dependencies", form.constraints], ["Budget / timeline", `${form.budget || "Not specified"} · ${form.timeline || "Not specified"}`], ["Existing URL", form.productUrl], ["References", form.competitorReferences], ["Attachments", files.map((file) => file.name).join(", ") || "None"]] },
             { title: "Discovery method", step: 4, entries: [["Method", form.discoveryMethod], ["Preferred times", form.preferredTimes]] },
           ].map((section) => (
             <section key={section.title} className="rounded-2xl border border-divider-strong p-5">
@@ -622,7 +656,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
             <span>I agree that Rapidlyon may use these details and any attachments to assess and respond to my project request, as described in the <Link href="/privacy" className="underline underline-offset-2">Privacy Policy</Link>. <span aria-hidden="true">*</span></span>
           </label>
           {errors.consent ? <p role="alert" className="text-sm text-danger-strong">{errors.consent}</p> : null}
-          <p className="text-sm leading-6 text-body-muted">After submission, the team will review your answers and contact you by email. Email notifications are not yet configured; meeting requests are not bookings unless a configured scheduling link is provided.</p>
+          <p className="text-sm leading-6 text-body-muted">After submission, the team will review fit and feasibility and follow up manually by email. A written scope and agreement are required before work begins. Email notifications are not automated; meeting requests are not bookings.</p>
         </div>
       ) : null}
 

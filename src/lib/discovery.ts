@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 export const discoveryServices = [
+  "UX/UI & Product Design",
+  "Website Development",
+  "SEO & Website Optimization",
+  "Other / not sure yet",
+  // Retain legacy values so existing submissions and browser drafts remain readable.
   "UX research and UX/UI design",
   "Website design",
   "Website development",
@@ -9,6 +14,8 @@ export const discoveryServices = [
   "Existing product redesign",
   "Other digital product requirements",
 ] as const;
+
+export const discoveryServiceCategories = discoveryServices.slice(0, 4);
 
 export const discoveryMethods = [
   "Self-guided discovery",
@@ -28,12 +35,14 @@ export const discoverySubmissionSchema = z.object({
   timeZone: z.string().trim().min(1).max(100),
   industry: z.string().trim().min(1).max(120),
   businessStage: z.string().trim().min(1).max(100),
+  businessModel: z.string().trim().max(2000),
   services: z.array(z.enum(discoveryServices)).min(1).max(discoveryServices.length),
   answers: answersSchema,
   projectOverview: z.string().trim().min(20).max(5000),
   objectives: z.string().trim().max(5000),
   mustHaveFeatures: z.string().trim().max(5000),
   niceToHaveFeatures: z.string().trim().max(5000),
+  constraints: z.string().trim().max(5000),
   budget: z.string().trim().max(100),
   timeline: z.string().trim().max(200),
   productUrl: z.string().trim().max(500),
@@ -74,6 +83,8 @@ export const discoveryAdminSummarySchema = z.object({
   discovery_method: z.enum(discoveryMethods),
   status: discoveryStatusSchema,
   created_at: z.string().datetime(),
+  next_action: z.string().nullable(),
+  follow_up_at: z.string().nullable(),
 });
 
 export const discoveryAdminRecordSchema = discoveryAdminSummarySchema.extend({

@@ -2,6 +2,9 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/data/site";
 import { discoverySubmissionSchema } from "@/lib/discovery";
+import { isSameOriginRequest } from "@/lib/discovery-auth";
+import { readBoundedBody } from "@/lib/request-body";
+import { checkRateLimit, rateLimitFailure } from "@/lib/rate-limit";
 import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 const maxFileBytes = 5 * 1024 * 1024;
@@ -13,6 +16,15 @@ const allowedFiles = new Map([
   ["image/png", "png"],
   ["image/webp", "webp"],
 ]);
+
+async function hasAllowedSignature(file: File) {
+  const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  if (file.type === "application/pdf") return new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-";
+  if (file.type === "image/jpeg") return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  if (file.type === "image/png") return [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((byte, index) => bytes[index] === byte);
+  if (file.type === "image/webp") return new TextDecoder().decode(bytes.slice(0, 4)) === "RIFF" && new TextDecoder().decode(bytes.slice(8, 12)) === "WEBP";
+  return false;
+}
 
 async function removeUploadedFiles(
   config: NonNullable<ReturnType<typeof getSupabaseServerConfig>>,
@@ -40,6 +52,22 @@ async function removeUploadedFiles(
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ success: false, message: "Request origin could not be verified." }, { status: 403 });
+  }
+
+  const rateLimit = await checkRateLimit(request, "discovery", 5, 60 * 60);
+  if (!rateLimit.allowed) return rateLimitFailure(rateLimit);
+
+  const maxRequestBytes = maxTotalFileBytes + 1024 * 1024;
+  const boundedBody = await readBoundedBody(request, maxRequestBytes);
+  if (!boundedBody.ok && boundedBody.reason === "too_large") {
+    return NextResponse.json({ success: false, message: "The submission is too large." }, { status: 413 });
+  }
+  if (!boundedBody.ok) {
+    return NextResponse.json({ success: false, message: "Please submit a valid discovery form." }, { status: 400 });
+  }
+
   const config = getSupabaseServerConfig();
   if (!config) {
     return NextResponse.json(
@@ -51,14 +79,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const contentLength = Number(request.headers.get("content-length") || "0");
-  if (contentLength > maxTotalFileBytes + 1024 * 1024) {
-    return NextResponse.json({ success: false, message: "The submission is too large." }, { status: 413 });
-  }
-
   let form: FormData;
   try {
-    form = await request.formData();
+    form = await new Response(boundedBody.body, {
+      headers: { "Content-Type": request.headers.get("content-type") || "" },
+    }).formData();
   } catch {
     return NextResponse.json({ success: false, message: "Please submit a valid discovery form." }, { status: 400 });
   }
@@ -95,7 +120,7 @@ export async function POST(request: Request) {
   let totalBytes = 0;
   for (const file of files as File[]) {
     totalBytes += file.size;
-    if (file.size > maxFileBytes || file.size === 0 || !allowedFiles.has(file.type)) {
+    if (file.size > maxFileBytes || file.size === 0 || !allowedFiles.has(file.type) || !await hasAllowedSignature(file)) {
       return NextResponse.json(
         { success: false, message: "Attachments must be PDF, JPG, PNG, or WebP files under 5 MB each." },
         { status: 400 },

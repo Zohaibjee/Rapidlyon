@@ -25,6 +25,8 @@ export function DiscoveryAdmin() {
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<DiscoveryAdminRecord["status"]>("New");
   const [notes, setNotes] = useState("");
+  const [nextAction, setNextAction] = useState("");
+  const [followUpAt, setFollowUpAt] = useState("");
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState("");
@@ -82,6 +84,8 @@ export function DiscoveryAdmin() {
       setSelected(parsed.data);
       setSelectedStatus(parsed.data.status);
       setNotes(parsed.data.internal_notes);
+      setNextAction(parsed.data.next_action || "");
+      setFollowUpAt(parsed.data.follow_up_at || "");
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Submission could not be loaded.");
     } finally {
@@ -98,7 +102,7 @@ export function DiscoveryAdmin() {
       const response = await fetch(`/api/admin/discovery/${selected.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: selectedStatus, internalNotes: notes }),
+        body: JSON.stringify({ status: selectedStatus, internalNotes: notes, nextAction, followUpAt }),
       });
       const payload = await response.json();
       if (!response.ok || payload?.success !== true) {
@@ -107,7 +111,7 @@ export function DiscoveryAdmin() {
       const parsed = discoveryAdminRecordSchema.safeParse(payload.submission);
       if (!parsed.success) throw new Error("The updated record had an unexpected format.");
       setSelected(parsed.data);
-      setNotice("Status and internal notes saved.");
+      setNotice("Status, next action, follow-up date, and internal notes saved.");
       await loadSubmissions();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Changes could not be saved.");
@@ -185,6 +189,8 @@ export function DiscoveryAdmin() {
                   </span>
                   <span className="mt-1 block truncate text-sm text-body-muted">{submission.company} · {submission.email}</span>
                   <span className="mt-1 block text-xs text-muted">{dateLabel(submission.created_at)}</span>
+                  {submission.follow_up_at ? <span className="mt-1 block text-xs font-medium text-ink">Follow up: {new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(`${submission.follow_up_at}T00:00:00Z`))}</span> : null}
+                  {submission.next_action ? <span className="mt-1 block truncate text-xs text-body-muted">Next: {submission.next_action}</span> : null}
                 </button>
               </li>
             ))}
@@ -247,6 +253,19 @@ export function DiscoveryAdmin() {
                     ))}
                   </ul>
                 ) : <p className="mt-2 text-sm text-body-muted">No attachments.</p>}
+              </div>
+
+              <div className="mt-6">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="next-action" className="text-sm font-semibold">Next action</label>
+                    <input id="next-action" maxLength={1000} value={nextAction} onChange={(event) => setNextAction(event.target.value)} className="mt-2 w-full rounded-xl border border-divider-strong px-4 py-3 text-sm outline-none focus:border-ink" />
+                  </div>
+                  <div>
+                    <label htmlFor="follow-up-at" className="text-sm font-semibold">Follow-up date</label>
+                    <input id="follow-up-at" type="date" value={followUpAt} onChange={(event) => setFollowUpAt(event.target.value)} className="mt-2 w-full rounded-xl border border-divider-strong px-4 py-3 text-sm outline-none focus:border-ink" />
+                  </div>
+                </div>
               </div>
 
               <div className="mt-6">

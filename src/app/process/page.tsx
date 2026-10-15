@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata(
   "Process",
-  "See how Rapidlyon moves from discovery and planning through design, development, quality review and launch.",
+  "See how Rapidlyon moves from discovery and project qualification to written scope, proposal, agreement, delivery, approval, and launch.",
   "/process",
 );
 
@@ -14,8 +14,8 @@ export default function ProcessPage() {
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <SectionHeading
         eyebrow="Process"
-        title="A calm, structured path from idea to launch."
-        description="We make the process visible so the work feels collaborative, realistic, and aligned with real product needs."
+        title="Understand first. Agree the work. Then deliver."
+        description="The path starts with your audience, problem, business model, goals, and constraints. A discovery request is a lead, not an accepted project or binding quote."
         level="h1"
       />
 

@@ -128,6 +128,7 @@ export function InquiryForm({
   const [errors, setErrors] = useState<Partial<Record<keyof InquiryFormValues, string>>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   const isReady = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
@@ -203,7 +204,7 @@ export function InquiryForm({
       const response = await fetch("/api/inquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.data),
+        body: JSON.stringify({ ...result.data, companyWebsite: honeypot }),
       });
 
       const payload = await response.json();
@@ -363,6 +364,10 @@ export function InquiryForm({
       >
         {status === "loading" ? "Sending..." : "Send inquiry"}
       </button>
+      <label className="sr-only" aria-hidden="true">
+        Leave this field empty
+        <input tabIndex={-1} autoComplete="off" name="companyWebsite" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} />
+      </label>
     </form>
   );
 }

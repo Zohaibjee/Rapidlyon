@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 
 export const metadata = createPageMetadata(
   "Frequently asked questions",
-  "Answers about Rapidlyon project engagements, timelines, collaboration and design and development services.",
+  "Answers about Rapidlyon discovery, project fit, written scope, timelines, collaboration, product design, website development, and SEO services.",
   "/faq",
 );
 

@@ -21,7 +21,7 @@ export type Project = WorkProject;
 
 export const siteConfig = {
   brand: "Rapidlyon",
-  description: "Rapidlyon designs clear digital experiences and builds modern websites and products for ambitious teams.",
+  description: "Rapidlyon turns ideas into digital products through discovery, research, UX, design, development, and launch.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://rapidlyon.com",
   email: "hello@rapidlyon.com",
   address: "Remote-first studio working with founders and teams worldwide.",
@@ -89,8 +89,34 @@ export const services: Service[] = [
     ],
   },
   {
+    slug: "seo-website-optimization",
+    title: "SEO & Website Optimization",
+    eyebrow: "Make your site easier to find and use",
+    short: "Technical SEO foundations, metadata, performance, and accessibility improvements grounded in your site and goals.",
+    description:
+      "We review how a website is structured, indexed, and experienced, then prioritize practical technical SEO, metadata, performance, accessibility, and content recommendations. Search rankings and traffic are not guaranteed.",
+    audience: "Businesses with an existing website that need a clearer picture of technical or on-page issues and a practical improvement plan.",
+    problems: [
+      "Important pages or information are difficult for visitors or search engines to find.",
+      "Metadata, indexability, or structured data needs a careful review.",
+      "Performance, accessibility, or content structure is getting in the way of a useful experience.",
+    ],
+    deliverables: [
+      "Technical SEO and indexability review",
+      "On-page metadata and content-structure recommendations",
+      "Performance and accessibility improvement priorities",
+      "Implementation support and validation where included in scope",
+    ],
+    process: [
+      { title: "Review", text: "Understand the site, business goals, available data, and technical constraints." },
+      { title: "Prioritize", text: "Separate observed issues from hypotheses and agree which improvements fit the project." },
+      { title: "Improve", text: "Make or document the agreed technical and on-page changes within the approved scope." },
+      { title: "Validate", text: "Check the implemented work; search performance depends on factors outside the studio's control." },
+    ],
+  },
+  {
     slug: "nextjs-development",
-    title: "Next.js Development",
+    title: "Website Development with Next.js",
     eyebrow: "Modern product engineering",
     short: "App Router builds that prioritize performance, clarity, and scalable architecture.",
     description:
@@ -120,7 +146,7 @@ export const services: Service[] = [
     eyebrow: "Product strategy + build",
     short: "Lean product experiences that validate directions quickly and de-risk the next stage of growth.",
     description:
-      "We help early-stage teams turn ideas into clear product experiences, validate priority flows, and ship a working MVP that is ready for real use.",
+      "We help early-stage teams clarify product assumptions, shape priority flows, and assess the feasibility and scope of an MVP before implementation is agreed.",
     audience: "Startups and product teams validating demand, testing user journeys, and preparing for a stronger product iteration cycle.",
     problems: [
       "The product idea is promising but the experience still needs a sharper user story and clearer flow.",
@@ -130,8 +156,8 @@ export const services: Service[] = [
     deliverables: [
       "Product flow definitions and MVP scoping",
       "UX and interface design for critical journeys",
-      "Frontend implementation and essential integrations",
-      "Launch-ready experience with room for iteration",
+      "Feasibility review for implementation and essential integrations",
+      "A scoped delivery plan for the first product release",
     ],
     process: [
       { title: "Scope", text: "We define what is essential, what can wait, and how the core journey supports the business case." },
@@ -144,10 +170,10 @@ export const services: Service[] = [
     slug: "website-redesign",
     title: "Website Redesign",
     eyebrow: "Refine what exists",
-    short: "Strategic redesigns that improve clarity, conversion, and the experience behind the brand.",
+    short: "A careful review and redesign focused on clearer information, navigation, and user journeys.",
     description:
-      "We audit an existing website, identify friction in the user journey, and redesign the experience to feel more current, easier to navigate, and more aligned with the business.",
-    audience: "Organizations with an existing website that needs strategic improvement, clearer messaging, and better conversion performance.",
+      "We review an existing website, identify observable friction in its content and user journeys, and scope changes to better reflect the business and its audience.",
+    audience: "Organizations with an existing website that needs clearer messaging, navigation, or a more maintainable experience.",
     problems: [
       "The current website no longer reflects the business or the quality of the offer.",
       "Visitors cannot quickly understand what the business does or why it matters.",
@@ -370,7 +396,12 @@ export const faqs = [
   {
     question: "When is a project considered booked, and how do we agree the scope?",
     answer:
-      "An enquiry or discovery request is not a confirmed booking. We first review the context, clarify deliverables and assumptions, then share the agreed fee and scope for approval. Work starts only after the terms are approved; any meeting time is confirmed separately.",
+      "An enquiry or discovery request is a lead, not an accepted project or binding quote. After reviewing fit and feasibility, we define the objective, deliverables, exclusions, assumptions, milestones and estimated timeline, price, revisions, approvals, dependencies, and client responsibilities in writing. Any change to agreed scope is reviewed for cost and schedule impact and approved before work changes. Work begins only after the agreement and payment terms are accepted; meeting times are confirmed separately.",
+  },
+  {
+    question: "Can you guarantee search rankings or traffic?",
+    answer:
+      "No. SEO and website optimization work can address technical foundations, metadata, indexability, performance, accessibility, and content recommendations. Search rankings and traffic depend on external factors and are not guaranteed.",
   },
   {
     question: "Are the UX projects in the Work section client projects?",
@@ -393,12 +424,14 @@ export const principles = [
 ];
 
 export const processSteps = [
-  { title: "Discover", text: "We align around the opportunity, audience, and business context before ideas become screens." },
-  { title: "Plan", text: "We define flows, scope, priorities, and the roadmap for the design and build work." },
-  { title: "Design", text: "We shape the interaction model, content hierarchy, and visual direction in a practical way." },
-  { title: "Build", text: "We turn the approved design into a responsive, maintainable web experience." },
-  { title: "QA", text: "We review quality, accessibility, interactions, and content readiness before launch." },
-  { title: "Launch", text: "We support final delivery, handoff, and a smooth transition into ongoing iteration." },
+  { title: "Discover", text: "Understand the client, audience, problem, business model, desired outcomes, and constraints." },
+  { title: "Qualify", text: "Review service fit, feasibility, dependencies, budget and timeline compatibility, and delivery capacity. A request is not accepted automatically." },
+  { title: "Scope & estimate", text: "Define the objective, deliverables, exclusions, assumptions, milestones, estimated timeline, price, revisions, approvals, and client responsibilities." },
+  { title: "Proposal & agreement", text: "Share the proposed work in writing. Agree change-request handling, agreement terms, and payment conditions before project activation." },
+  { title: "Design & deliver", text: "Work through the approved design, development, or optimization scope with visible decisions and client communication." },
+  { title: "Review & approve", text: "Review deliverables against the agreed scope, collect consolidated feedback, and resolve included revisions." },
+  { title: "Launch & hand off", text: "Complete agreed launch tasks, transfer deliverables, and confirm any remaining dependencies." },
+  { title: "Improve", text: "Discuss ongoing maintenance or iteration as a separately agreed next scope." },
 ];
 
 export const insights = [

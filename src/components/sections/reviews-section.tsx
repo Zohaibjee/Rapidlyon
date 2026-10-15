@@ -17,6 +17,7 @@ export function ReviewsSection() {
   const [errors, setErrors] = useState<Partial<Record<keyof ReviewFormValues, string>>>({});
   const [status, setStatus] = useState<ReviewStatus>("idle");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -98,7 +99,7 @@ export function ReviewsSection() {
       const response = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify({ ...parsed.data, companyWebsite: honeypot }),
       });
       const payload = await response.json();
 
@@ -209,6 +210,10 @@ export function ReviewsSection() {
             {status === "loading" ? "Submitting…" : "Submit for review"}
           </button>
           <p className="mt-3 text-xs leading-5 text-body-muted">Reviews are moderated before publication. No rating is displayed until a review is approved.</p>
+          <label className="sr-only" aria-hidden="true">
+            Leave this field empty
+            <input tabIndex={-1} autoComplete="off" name="companyWebsite" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} />
+          </label>
         </form>
       </div>
     </section>

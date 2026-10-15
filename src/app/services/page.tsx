@@ -4,8 +4,8 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata(
-  "UX design and web development services",
-  "Explore Rapidlyon's UX/UI design and web development services, how each engagement moves from a real need to a clear outcome, and where to learn more.",
+  "UX/UI design, website development, and SEO services",
+  "Explore Rapidlyon's product design, website development, and SEO and website optimization services, each scoped around business and user needs.",
   "/services",
 );
 
@@ -13,9 +13,9 @@ const servicePaths = [
   {
     id: "design",
     eyebrow: "Understand people. Shape the experience.",
-    title: "UX/UI design",
+    title: "UX/UI & product design",
     summary:
-      "We help you make the product easier to understand and use—before visual polish or development decisions lock the experience in.",
+      "We help you understand the audience and problem, then shape clear product journeys and interfaces before implementation decisions lock the experience in.",
     href: "/services/ux-ui-design",
     detailsLink: "Explore UX/UI design",
     contactHref: "/contact?intent=service&service=ux-ui-design",
@@ -52,7 +52,7 @@ const servicePaths = [
   {
     id: "development",
     eyebrow: "Plan clearly. Build for real use.",
-    title: "Web development",
+    title: "Website development",
     summary:
       "We turn an agreed design and content structure into a responsive, accessible website that is maintainable and ready to launch.",
     href: "/services/web-development",
@@ -88,22 +88,44 @@ const servicePaths = [
     ],
     linkLabel: "See the web development service",
   },
+  {
+    id: "optimization",
+    eyebrow: "Improve what people and search engines can find",
+    title: "SEO & website optimization",
+    summary: "Review technical SEO, metadata, indexability, performance, accessibility, and content structure, then prioritize changes that fit the site and its constraints.",
+    href: "/services/seo-website-optimization",
+    detailsLink: "Explore SEO & optimization",
+    contactHref: "/contact?intent=service&service=seo-website-optimization",
+    icon: Search,
+    services: [
+      { title: "Technical SEO", text: "Review crawlability, indexability, canonical behavior, and technical foundations.", icon: Search },
+      { title: "On-page foundations", text: "Improve page titles, descriptions, headings, and internal linking where appropriate.", icon: Layers3 },
+      { title: "Performance & accessibility", text: "Identify practical experience improvements across devices and assistive use.", icon: Sparkles },
+      { title: "Content recommendations", text: "Clarify information structure without promising rankings or traffic.", icon: Blocks },
+    ],
+    process: [
+      ["Review", "Understand the site, business goals, available data, and constraints."],
+      ["Prioritize", "Separate observed issues from assumptions and agree practical scope."],
+      ["Improve", "Implement or document the agreed work, then validate the changes."],
+    ],
+    linkLabel: "See SEO & website optimization",
+  },
 ];
 
 const specialistServices = [
   {
     title: "Website redesign",
-    description: "Improve an existing website’s clarity, structure, and experience.",
+    description: "Improve the clarity, content structure, and journeys of an existing website.",
     href: "/services/website-redesign",
   },
   {
     title: "SaaS & MVP",
-    description: "Shape and build the essential journeys for an early product.",
+    description: "A project type that begins with discovery, feasibility, and agreed first-release scope.",
     href: "/services/saas-mvp",
   },
   {
     title: "Next.js development",
-    description: "Build content-led websites on a modern, maintainable foundation.",
+    description: "A technology capability within website development, selected where it fits the project.",
     href: "/services/nextjs-development",
   },
 ];
@@ -114,9 +136,9 @@ export default function ServicesPage() {
       <section className="bg-ink px-4 py-16 text-paper sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow="Services · from first question to finished work"
-            title="Make the experience clearer. Build it to work."
-            description="Start with the help you need: understand and design the experience, build a website, or bring both together. Each path has a clear way of working—and a deeper page if you want the details."
+            eyebrow="Services · discovery before solutions"
+            title="Three ways to make a digital product work better."
+            description="Start with the problem, audience, business model, and constraints. Then choose product design, website development, or SEO and website optimization; the scope can connect these where it makes sense."
             level="h1"
             tone="dark"
           />
@@ -137,7 +159,7 @@ export default function ServicesPage() {
 
           return (
             <article
-              id={index === 0 ? "ux-ui-design" : "web-development"}
+              id={index === 0 ? "ux-ui-design" : path.id === "development" ? "web-development" : "seo-website-optimization"}
               key={path.id}
               className="scroll-mt-28 overflow-hidden rounded-feature border border-divider bg-on-dark shadow-subtle"
             >
@@ -201,9 +223,9 @@ export default function ServicesPage() {
       <section className="border-y border-divider bg-on-dark py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow="More focused services"
+            eyebrow="Capabilities and project types"
             title="Have a specific kind of project?"
-            description="These pages explain how the same design and development capabilities apply to particular situations."
+            description="SaaS/MVP work and Next.js implementation are considered within the relevant service category and scoped for feasibility; they are not separate primary service categories."
             level="h2"
           />
           <div className="mt-7 grid gap-4 md:grid-cols-3">

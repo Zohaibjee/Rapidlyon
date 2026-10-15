@@ -6,29 +6,29 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata(
-  "UX design and web development for growing teams",
-  "Rapidlyon is an independent digital design and development studio helping founders and teams shape clear user experiences and responsive websites.",
+  "Digital product design and development studio",
+  "Rapidlyon turns ideas into digital products through discovery, research, UX, design, development, and launch.",
   "/",
 );
 
 const serviceHighlights = [
   {
-    title: "UX / UI design",
+    title: "UX/UI & product design",
     description: "Turn an early idea or confusing journey into a clear structure, useful flows, and considered responsive interfaces.",
     points: ["Discovery and project framing", "Sitemap, flows, and wireframes", "UI design, prototype, and handoff"],
     href: "/services/ux-ui-design",
   },
   {
-    title: "Web development",
+    title: "Website development",
     description: "Build a responsive, maintainable website from approved designs, with the agreed details checked before handoff.",
     points: ["Responsive implementation", "Agreed forms and integrations", "Quality review and launch handoff"],
     href: "/services/web-development",
   },
   {
-    title: "Product & MVP work",
-    description: "Focus the first release around the essential product journey instead of trying to build every possible feature at once.",
-    points: ["Product framing and scope", "Critical UX flows", "A practical path from design to build"],
-    href: "/services/saas-mvp",
+    title: "SEO & website optimization",
+    description: "Find practical improvements to technical foundations, page structure, accessibility, and performance.",
+    points: ["Technical SEO and indexability", "Metadata and content structure", "Performance and accessibility priorities"],
+    href: "/services/seo-website-optimization",
   },
 ];
 
@@ -44,10 +44,10 @@ export default function HomePage() {
                 Independent digital design & development studio
             </p>
             <h1 className="max-w-4xl text-display font-semibold leading-display tracking-display-tight">
-              Make your offer easier to understand—and act on.
+              We turn ideas into digital products.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-on-dark/75 sm:text-xl">
-              We work with founders and teams to make digital products easier to understand, navigate, and build—from the first product decisions through to a responsive website.
+              From discovery and research to UX, design, development, and launch, we build products around real business and user needs.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link

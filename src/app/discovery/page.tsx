@@ -3,7 +3,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata(
   "Project discovery",
-  "Share your business context, goals and digital product requirements with Rapidlyon.",
+  "Share your audience, business context, project goals, and requirements for product design, website development, or SEO and website optimization.",
   "/discovery",
 );
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isDiscoveryAdmin, isSameOriginRequest } from "@/lib/discovery-auth";
 import { getSupabaseServerConfig } from "@/lib/supabase-server";
+import { readBoundedJson } from "@/lib/request-body";
+import { checkRateLimit, rateLimitFailure } from "@/lib/rate-limit";
 
 const idSchema = z.string().uuid();
 const attachmentSchema = z.object({
@@ -18,18 +20,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ success: false, message: "Sign in to access attachments." }, { status: 401 });
   }
 
+  const rateLimit = await checkRateLimit(request, "admin-attachment-links", 60, 60 * 60);
+  if (!rateLimit.allowed) return rateLimitFailure(rateLimit);
+
   const { id } = await params;
   if (!idSchema.safeParse(id).success) {
     return NextResponse.json({ success: false, message: "Invalid submission ID." }, { status: 400 });
   }
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
+  const requestBody = await readBoundedJson(request, 4 * 1024);
+  if (!requestBody.ok) {
     return NextResponse.json({ success: false, message: "Submit a valid attachment request." }, { status: 400 });
   }
-  const parsed = attachmentSchema.safeParse(body);
+  const parsed = attachmentSchema.safeParse(requestBody.value);
   if (!parsed.success) {
     return NextResponse.json({ success: false, message: "Invalid attachment path." }, { status: 400 });
   }

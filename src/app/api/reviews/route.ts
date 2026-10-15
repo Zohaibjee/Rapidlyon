@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/data/site";
 import { publishedReviewSchema, reviewSchema } from "@/lib/review-validation";
+import { isSameOriginRequest } from "@/lib/discovery-auth";
+import { readBoundedJson } from "@/lib/request-body";
+import { checkRateLimit, rateLimitFailure } from "@/lib/rate-limit";
 import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 export async function GET() {
@@ -58,15 +61,30 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  let body: unknown;
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ success: false, message: "Request origin could not be verified." }, { status: 403 });
+  }
 
-  try {
-    body = await request.json();
-  } catch {
+  const rateLimit = await checkRateLimit(request, "reviews", 3, 60 * 60);
+  if (!rateLimit.allowed) return rateLimitFailure(rateLimit);
+
+  const requestBody = await readBoundedJson(request, 8 * 1024);
+  if (!requestBody.ok && requestBody.reason === "too_large") {
+    return NextResponse.json({ success: false, message: "The review is too large." }, { status: 413 });
+  }
+  if (!requestBody.ok) {
     return NextResponse.json(
       { success: false, message: "Please submit valid JSON." },
       { status: 400 },
     );
+  }
+
+  const body = requestBody.value;
+  const honeypot = typeof body === "object" && body !== null && "companyWebsite" in body
+    ? (body as { companyWebsite?: unknown }).companyWebsite
+    : "";
+  if (typeof honeypot !== "string" || honeypot.length > 200 || honeypot) {
+    return NextResponse.json({ success: false, message: "The review could not be processed." }, { status: 400 });
   }
 
   const parsed = reviewSchema.safeParse(body);

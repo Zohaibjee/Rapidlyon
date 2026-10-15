@@ -3,11 +3,19 @@ import { isDiscoveryAdmin, isSameOriginRequest } from "@/lib/discovery-auth";
 import { discoveryStatusSchema } from "@/lib/discovery";
 import { z } from "zod";
 import { getSupabaseServerConfig } from "@/lib/supabase-server";
+import { readBoundedJson } from "@/lib/request-body";
+import { checkRateLimit, rateLimitFailure } from "@/lib/rate-limit";
 
 const idSchema = z.string().uuid();
+const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
+});
 const updateSchema = z.object({
   status: discoveryStatusSchema,
   internalNotes: z.string().max(10000),
+  nextAction: z.string().trim().max(1000),
+  followUpAt: dateSchema.or(z.literal("")),
 });
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -29,7 +37,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
 
   try {
     const response = await fetch(
-      `${config.url}/rest/v1/discovery_submissions?id=eq.${id}&select=id,full_name,email,company,services,discovery_method,status,created_at,submission,attachment_paths,internal_notes`,
+      `${config.url}/rest/v1/discovery_submissions?id=eq.${id}&select=id,full_name,email,company,services,discovery_method,status,created_at,submission,attachment_paths,internal_notes,next_action,follow_up_at`,
       {
         headers: {
           apikey: config.serviceRoleKey,
@@ -67,14 +75,15 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     return NextResponse.json({ success: false, message: "Invalid submission ID." }, { status: 400 });
   }
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
+  const rateLimit = await checkRateLimit(request, "admin-discovery-update", 60, 60);
+  if (!rateLimit.allowed) return rateLimitFailure(rateLimit);
+
+  const requestBody = await readBoundedJson(request, 16 * 1024);
+  if (!requestBody.ok) {
     return NextResponse.json({ success: false, message: "Submit a valid update." }, { status: 400 });
   }
 
-  const parsed = updateSchema.safeParse(body);
+  const parsed = updateSchema.safeParse(requestBody.value);
   if (!parsed.success) {
     return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Invalid update." }, { status: 400 });
   }
@@ -96,6 +105,8 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       body: JSON.stringify({
         status: parsed.data.status,
         internal_notes: parsed.data.internalNotes,
+        next_action: parsed.data.nextAction || null,
+        follow_up_at: parsed.data.followUpAt || null,
         updated_at: new Date().toISOString(),
       }),
       cache: "no-store",

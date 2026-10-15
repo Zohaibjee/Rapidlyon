@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata(
   "About",
-  "Learn how Rapidlyon brings product thinking, UX/UI design and modern web development together for ambitious teams.",
+  "Rapidlyon turns ideas into digital products through discovery, product design, website development, and practical optimization.",
   "/about",
 );
 
@@ -14,18 +14,18 @@ export default function AboutPage() {
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <SectionHeading
         eyebrow="About"
-        title="We build digital experiences with a clear point of view."
-        description="Rapidlyon exists to help ambitious ideas become usable, confident, and well-crafted products."
+        title="We turn ideas into digital products."
+        description="From discovery and research to UX, design, development, and launch, we build products around real business and user needs."
         level="h1"
       />
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-card border border-divider bg-on-dark p-8">
           <p className="text-lg leading-8 text-body">
-            Rapidlyon brings UX/UI design, product thinking and web engineering into one connected engagement. We work with founders and teams to clarify the problem, shape a useful experience, and build a product or website that is ready to evolve.
+            Rapidlyon is a digital product design and development studio. We work with founders and teams to understand the audience, business model, problem, constraints, and desired outcomes before recommending a solution.
           </p>
           <p className="mt-6 text-lg leading-8 text-body">
-            The work is a fit when there is a meaningful digital challenge: a product journey that needs clarity, a new idea that needs a focused first version, or a website that no longer reflects the business.
+            Work may focus on UX/UI and product design, website development, or SEO and website optimization. SaaS/MVP and mobile app design are considered as project types; mobile app development depends on feasibility and agreed scope.
           </p>
         </div>
 

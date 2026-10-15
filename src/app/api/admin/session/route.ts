@@ -6,11 +6,16 @@ import {
   isSameOriginRequest,
   verifyAdminPassword,
 } from "@/lib/discovery-auth";
+import { readBoundedJson } from "@/lib/request-body";
+import { checkRateLimit, rateLimitFailure } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   if (!isSameOriginRequest(request)) {
     return NextResponse.json({ success: false, message: "Request origin could not be verified." }, { status: 403 });
   }
+
+  const rateLimit = await checkRateLimit(request, "admin-login", 5, 15 * 60);
+  if (!rateLimit.allowed) return rateLimitFailure(rateLimit);
 
   if (!discoveryAdminConfigured()) {
     return NextResponse.json(
@@ -19,15 +24,13 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
+  const requestBody = await readBoundedJson(request, 2 * 1024);
+  if (!requestBody.ok) {
     return NextResponse.json({ success: false, message: "Submit a valid sign-in request." }, { status: 400 });
   }
 
-  const password = typeof body === "object" && body !== null && "password" in body
-    ? (body as { password?: unknown }).password
+  const password = typeof requestBody.value === "object" && requestBody.value !== null && "password" in requestBody.value
+    ? (requestBody.value as { password?: unknown }).password
     : null;
 
   if (typeof password !== "string" || password.length > 256 || !verifyAdminPassword(password)) {
