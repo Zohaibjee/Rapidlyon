@@ -37,7 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="en"
       className={`${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[#F5F5EF] text-[#171916]">
+      <body className="min-h-full bg-paper text-ink">
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1">{children}</main>

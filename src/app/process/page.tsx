@@ -21,15 +21,15 @@ export default function ProcessPage() {
 
       <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {processSteps.map((step, index) => (
-          <div key={step.title} className="rounded-[24px] border border-black/5 bg-white p-6 shadow-[0_12px_28px_rgba(23,25,22,0.04)]">
-            <div className="mb-6 flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-[#73776D]">
+          <div key={step.title} className="rounded-panel border border-divider bg-on-dark p-6 shadow-soft-raised">
+            <div className="mb-6 flex items-center justify-between text-caption uppercase tracking-label text-muted">
               <span>0{index + 1}</span>
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#EAF3C9] text-[#171916]">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-ink">
                 <ProcessStepIcon title={step.title} />
               </span>
             </div>
-            <h2 className="text-2xl tracking-[-0.06em] text-[#171916]">{step.title}</h2>
-            <p className="mt-4 text-sm leading-7 text-[#4f544d]">{step.text}</p>
+            <h2 className="text-2xl tracking-display text-ink">{step.title}</h2>
+            <p className="mt-4 text-sm leading-7 text-body">{step.text}</p>
           </div>
         ))}
       </div>

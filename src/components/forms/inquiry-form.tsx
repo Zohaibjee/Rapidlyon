@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { services } from "@/data/site";
+import { services, type Project, type Service } from "@/data/site";
 import { inquirySchema, type InquiryFormValues } from "@/lib/validation";
 
 const initialValues: InquiryFormValues = {
@@ -16,8 +16,115 @@ const initialValues: InquiryFormValues = {
 
 const serviceOptions = services.map((service) => service.title);
 
-export function InquiryForm() {
-  const [values, setValues] = useState<InquiryFormValues>(initialValues);
+export type InquiryIntent = "general" | "conversation" | "service" | "pricing" | "project";
+type InquiryMode = "design" | "development" | "bundle";
+type ContextQuestion = { name: string; label: string; placeholder: string };
+
+type InquiryFormProps = {
+  intent?: InquiryIntent;
+  service?: Service;
+  serviceValue?: string;
+  project?: Project;
+  mode?: InquiryMode;
+  tier?: string;
+  pageCount?: number;
+  customScope?: boolean;
+};
+
+function getContextQuestions(
+  intent: InquiryIntent,
+  service?: Service,
+  project?: Project,
+  customScope = false,
+): ContextQuestion[] {
+  if (intent === "service") {
+    if (service?.slug === "ux-ui-design") {
+      return [
+        { name: "userProblem", label: "Which user problem or journey needs attention?", placeholder: "Tell us what users need to do and where the current experience falls short." },
+        { name: "designDeliverables", label: "Which design outputs would help your team move forward?", placeholder: "For example: research, flows, wireframes, UI design, prototype, or handoff." },
+      ];
+    }
+    if (service?.slug === "web-development" || service?.slug === "nextjs-development") {
+      return [
+        { name: "buildScope", label: "Which pages, flows, or features need to be built?", placeholder: "List the main pages, user journeys, or functionality in scope." },
+        { name: "readyMaterials", label: "What is already ready for development?", placeholder: "For example: approved designs, content, brand assets, or integrations." },
+      ];
+    }
+    if (service?.slug === "saas-mvp") {
+      return [
+        { name: "productProblem", label: "What problem should the first product version solve?", placeholder: "Describe the user and the core problem they need solved." },
+        { name: "coreWorkflows", label: "Which workflows or features are essential for the first release?", placeholder: "Focus on what must work in the first version." },
+      ];
+    }
+    if (service?.slug === "website-redesign") {
+      return [
+        { name: "redesignIssues", label: "What is not working well on the current website?", placeholder: "For example: unclear messaging, hard-to-find information, low trust, or a difficult update process." },
+        { name: "redesignGoals", label: "What should the redesigned experience help visitors do?", placeholder: "Describe the key audience and action you want the site to support." },
+      ];
+    }
+    return [
+      { name: "currentChallenge", label: "What is happening today that led you to seek this service?", placeholder: "Share the current situation, challenge, or opportunity." },
+      { name: "desiredOutcome", label: "What would a useful outcome look like?", placeholder: "Tell us what should be clearer, easier, or possible after the work." },
+    ];
+  }
+
+  if (intent === "pricing") {
+    if (customScope) {
+      return [
+        { name: "customRequirements", label: "What does your project need that the listed packages do not cover?", placeholder: "Describe the outcome, features, or constraints that make your scope custom." },
+        { name: "customScopeDetails", label: "Which pages, journeys, integrations, or technical requirements are involved?", placeholder: "Share an approximate page count and any important workflows, systems, or integrations." },
+      ];
+    }
+    return [
+      { name: "packageScope", label: "What would you like included in this package?", placeholder: "Share the pages, templates, design or build work you have in mind." },
+      { name: "scopeQuestions", label: "What should we clarify before confirming the scope?", placeholder: "Mention features, integrations, content readiness, or anything that may affect the estimate." },
+    ];
+  }
+
+  if (intent === "project") {
+    return [
+      { name: "yourProject", label: "What are you planning, and who is it for?", placeholder: "Describe your product or website and its intended audience." },
+      { name: "referenceDetails", label: `What aspects of ${project?.title || "this project"} are relevant to your idea?`, placeholder: "For example: a similar workflow, catalog, feature, or customer experience." },
+    ];
+  }
+
+  return [];
+}
+
+export function InquiryForm({
+  intent = "general",
+  service,
+  serviceValue,
+  project,
+  mode,
+  tier,
+  pageCount,
+  customScope = false,
+}: InquiryFormProps) {
+  const contextQuestions = getContextQuestions(intent, service, project, customScope);
+  const contextTitle = intent === "service"
+    ? `${service?.title || "Service"} enquiry`
+    : intent === "pricing"
+      ? customScope
+        ? "Custom project scope enquiry"
+        : `${tier ? `${tier} package` : "Project scope"} enquiry`
+      : intent === "project"
+        ? `Enquiry about ${project?.title || "a similar project"}`
+        : "Quick project enquiry";
+  const contextDescription = intent === "service"
+    ? "A few service-specific details help us understand the right next step."
+    : intent === "pricing"
+      ? customScope
+        ? "Share the requirements that fall outside the listed packages so we can understand the right discovery and scoping step."
+        : `Share what you need from the ${tier ? `${tier} ` : ""}${mode === "design" ? "UX Design" : mode === "development" ? "Development" : mode === "bundle" ? "Design + Development" : "project"} scope.`
+      : intent === "project"
+        ? "The questions below use this case study as context, without assuming your project is the same."
+        : "A few details are enough to start. For a larger brief, you can use the guided project discovery form.";
+  const [values, setValues] = useState<InquiryFormValues>(() => ({
+    ...initialValues,
+    service: serviceValue || "",
+  }));
+  const [contextValues, setContextValues] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Partial<Record<keyof InquiryFormValues, string>>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -41,7 +148,41 @@ export function InquiryForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = inquirySchema.safeParse(values);
+    const contextDescription = contextQuestions
+      .map((question) => {
+        const answer = contextValues[question.name]?.trim();
+        return answer ? `${question.label}\n${answer}` : "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+    const userDetails = [contextDescription, values.projectDescription.trim()]
+      .filter(Boolean)
+      .join("\n\n");
+    const requiredDetails = contextQuestions.length
+      ? contextValues[contextQuestions[0].name]?.trim() || ""
+      : values.projectDescription.trim();
+    if (requiredDetails.length < 20) {
+      setErrors({ projectDescription: contextQuestions.length
+        ? "Please answer this service-specific question in a sentence or two."
+        : "Please share at least a little detail so we can respond usefully." });
+      setStatus("error");
+      setMessage("Please add a little more detail before sending your enquiry.");
+      return;
+    }
+    const pageReference = pageCount ? `Estimated page count: ${pageCount}` : "";
+    const reference = intent === "project" && project
+      ? `Project reference: ${project.title}`
+      : intent === "pricing"
+        ? customScope
+          ? `Custom project scope · ${mode || "Service not selected"}`
+          : `Package interest: ${tier || "Not selected"} · ${mode || "Service not selected"}`
+        : intent === "service" && service
+          ? `Service interest: ${service.title}`
+          : "";
+    const result = inquirySchema.safeParse({
+      ...values,
+      projectDescription: [reference, pageReference, userDetails].filter(Boolean).join("\n\n"),
+    });
 
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof InquiryFormValues, string>> = {};
@@ -76,7 +217,8 @@ export function InquiryForm() {
         payload?.message ||
           "Thanks! Your inquiry is ready for review. We’ll follow up soon.",
       );
-      setValues(initialValues);
+      setValues({ ...initialValues, service: serviceValue || "" });
+      setContextValues({});
       setErrors({});
     } catch (error) {
       setStatus("error");
@@ -89,54 +231,114 @@ export function InquiryForm() {
   };
 
   return (
-    <form noValidate onSubmit={handleSubmit} className="space-y-6 rounded-[28px] border border-black/5 bg-white p-5 shadow-[0_18px_50px_rgba(23,25,22,0.05)] md:p-8">
+    <form noValidate onSubmit={handleSubmit} className="space-y-6 rounded-card border border-divider bg-on-dark p-5 shadow-card md:p-8">
+      <div>
+        <h2 className="text-2xl font-semibold tracking-display-tight text-ink">{contextTitle}</h2>
+        <p className="mt-2 text-sm leading-6 text-body-muted">{contextDescription}</p>
+      </div>
+      {intent === "pricing" && (tier || customScope || pageCount) ? (
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl bg-accent-soft px-4 py-3 text-sm text-body-strong">
+          {customScope ? (
+            <span><strong className="text-ink">Scope:</strong> Custom requirements</span>
+          ) : tier ? (
+            <span><strong className="text-ink">Package:</strong> {tier}</span>
+          ) : null}
+          <span><strong className="text-ink">Service:</strong> {mode === "design" ? "UX Design" : mode === "development" ? "Development" : mode === "bundle" ? "Design + Development" : "To be confirmed"}</span>
+          {pageCount ? <span><strong className="text-ink">Estimated pages:</strong> {pageCount}</span> : null}
+        </div>
+      ) : null}
       <div className="grid gap-5 md:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block text-sm font-medium text-[#171916]">Name <span aria-hidden="true">*</span></label>
-          <input id="name" name="name" autoComplete="name" required aria-required="true" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "name-error" : undefined} value={values.name} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]" />
-          {errors.name ? <p id="name-error" className="mt-1 text-sm text-red-600">{errors.name}</p> : null}
+          <label htmlFor="name" className="mb-2 block text-sm font-medium text-ink">Name <span aria-hidden="true">*</span></label>
+          <input id="name" name="name" autoComplete="name" required aria-required="true" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "name-error" : undefined} value={values.name} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink" />
+          {errors.name ? <p id="name-error" className="mt-1 text-sm text-danger">{errors.name}</p> : null}
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-2 block text-sm font-medium text-[#171916]">Email <span aria-hidden="true">*</span></label>
-          <input id="email" type="email" name="email" autoComplete="email" required aria-required="true" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "email-error" : undefined} value={values.email} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]" />
-          {errors.email ? <p id="email-error" className="mt-1 text-sm text-red-600">{errors.email}</p> : null}
+          <label htmlFor="email" className="mb-2 block text-sm font-medium text-ink">Email <span aria-hidden="true">*</span></label>
+          <input id="email" type="email" name="email" autoComplete="email" required aria-required="true" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "email-error" : undefined} value={values.email} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink" />
+          {errors.email ? <p id="email-error" className="mt-1 text-sm text-danger">{errors.email}</p> : null}
         </div>
 
         <div>
-          <label htmlFor="company" className="mb-2 block text-sm font-medium text-[#171916]">Company (optional)</label>
-          <input id="company" name="company" autoComplete="organization" value={values.company} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]" />
+          <label htmlFor="company" className="mb-2 block text-sm font-medium text-ink">Company (optional)</label>
+          <input id="company" name="company" autoComplete="organization" value={values.company} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink" />
         </div>
 
         <div>
-          <label htmlFor="service" className="mb-2 block text-sm font-medium text-[#171916]">Requested service <span aria-hidden="true">*</span></label>
-          <select id="service" name="service" required aria-required="true" aria-invalid={Boolean(errors.service)} aria-describedby={errors.service ? "service-error" : undefined} value={values.service} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]">
-            <option value="">Select a service</option>
-            {serviceOptions.map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-          {errors.service ? <p id="service-error" className="mt-1 text-sm text-red-600">{errors.service}</p> : null}
+          {serviceValue ? (
+            <>
+              <p className="mb-2 block text-sm font-medium text-ink">Requested service</p>
+              <p className="rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 text-sm text-body-strong">{serviceValue}</p>
+            </>
+          ) : (
+            <>
+              <label htmlFor="service" className="mb-2 block text-sm font-medium text-ink">Requested service <span aria-hidden="true">*</span></label>
+              <select id="service" name="service" required aria-required="true" aria-invalid={Boolean(errors.service)} aria-describedby={errors.service ? "service-error" : undefined} value={values.service} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink">
+                <option value="">Select a service</option>
+                <option value="Design + Development">Design + Development</option>
+                {serviceOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              {errors.service ? <p id="service-error" className="mt-1 text-sm text-danger">{errors.service}</p> : null}
+            </>
+          )}
         </div>
       </div>
+
+      {contextQuestions.length ? (
+        <div className="space-y-5">
+          {contextQuestions.map((question) => (
+            <div key={question.name}>
+              <label htmlFor={question.name} className="mb-2 block text-sm font-medium text-ink">{question.label}</label>
+              <textarea
+                id={question.name}
+                name={question.name}
+                value={contextValues[question.name] || ""}
+                onChange={(event) => {
+                  setContextValues((current) => ({ ...current, [question.name]: event.target.value }));
+                  setErrors((current) => {
+                    const next = { ...current };
+                    delete next.projectDescription;
+                    return next;
+                  });
+                  setStatus("idle");
+                  setMessage("");
+                }}
+                rows={3}
+                placeholder={question.placeholder}
+                className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition placeholder:text-placeholder focus:border-ink"
+              />
+              {question === contextQuestions[0] && errors.projectDescription ? (
+                <p id="projectDescription-error" className="mt-1 text-sm text-danger">{errors.projectDescription}</p>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div>
-        <label htmlFor="projectDescription" className="mb-2 block text-sm font-medium text-[#171916]">Project description <span aria-hidden="true">*</span></label>
-        <textarea id="projectDescription" name="projectDescription" required aria-required="true" aria-invalid={Boolean(errors.projectDescription)} aria-describedby={errors.projectDescription ? "projectDescription-error" : undefined} value={values.projectDescription} onChange={handleChange} rows={6} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]" />
-        {errors.projectDescription ? <p id="projectDescription-error" className="mt-1 text-sm text-red-600">{errors.projectDescription}</p> : null}
+        <label htmlFor="projectDescription" className="mb-2 block text-sm font-medium text-ink">
+          {contextQuestions.length ? "Anything else we should know? (optional)" : "What would you like help with?"} {contextQuestions.length ? null : <span aria-hidden="true">*</span>}
+        </label>
+        <textarea id="projectDescription" name="projectDescription" required={!contextQuestions.length} aria-required={!contextQuestions.length} value={values.projectDescription} onChange={handleChange} rows={contextQuestions.length ? 3 : 6} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink" />
+        {errors.projectDescription && !contextQuestions.length ? <p id="projectDescription-error" className="mt-1 text-sm text-danger">{errors.projectDescription}</p> : null}
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2">
-        <div>
-          <label htmlFor="budget" className="mb-2 block text-sm font-medium text-[#171916]">Budget range (optional)</label>
-          <input id="budget" name="budget" value={values.budget} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]" />
-        </div>
+      {intent === "general" ? (
+        <div className="grid gap-5 md:grid-cols-2">
+          <div>
+            <label htmlFor="budget" className="mb-2 block text-sm font-medium text-ink">Budget range (optional)</label>
+            <input id="budget" name="budget" value={values.budget} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink" />
+          </div>
 
-        <div>
-          <label htmlFor="timeline" className="mb-2 block text-sm font-medium text-[#171916]">Timeline (optional)</label>
-          <input id="timeline" name="timeline" value={values.timeline} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-[#f7f7f3] px-4 py-3 outline-none transition focus:border-[#171916]" />
+          <div>
+            <label htmlFor="timeline" className="mb-2 block text-sm font-medium text-ink">Timeline (optional)</label>
+            <input id="timeline" name="timeline" value={values.timeline} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink" />
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {message ? (
         <p
@@ -144,10 +346,10 @@ export function InquiryForm() {
           aria-live={status === "error" ? "assertive" : "polite"}
           className={
             status === "success"
-              ? "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+              ? "rounded-xl border border-success-line bg-success-soft px-4 py-3 text-sm text-success"
               : status === "error"
-                ? "rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-                : "rounded-xl border border-black/5 bg-[#f5f5ef] px-4 py-3 text-sm text-[#171916]"
+                ? "rounded-xl border border-danger-line bg-danger-soft px-4 py-3 text-sm text-danger-strong"
+                : "rounded-xl border border-divider bg-paper px-4 py-3 text-sm text-ink"
           }
         >
           {message}
@@ -157,7 +359,7 @@ export function InquiryForm() {
       <button
         type="submit"
         disabled={status === "loading" || !isReady}
-        className="inline-flex w-full items-center justify-center rounded-full bg-[#171916] px-5 py-3 text-sm font-medium text-[#F5F5EF] transition hover:bg-[#2a2d27] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center rounded-full bg-ink px-5 py-3 text-sm font-medium text-paper transition hover:bg-ink-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "loading" ? "Sending..." : "Send inquiry"}
       </button>

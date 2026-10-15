@@ -6,7 +6,7 @@ export const inquirySchema = z.object({
   email: z.string().trim().email("Please enter a valid email address.").max(254, "Your email address must be 254 characters or fewer."),
   company: z.string().trim().max(120).optional().or(z.literal("")),
   service: z.string().trim().refine(
-    (value) => services.some((service) => service.title === value),
+    (value) => value === "Design + Development" || value === "Not sure yet" || services.some((service) => service.title === value),
     "Please select a valid service.",
   ),
   projectDescription: z

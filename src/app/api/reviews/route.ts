@@ -1,20 +1,10 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/data/site";
 import { publishedReviewSchema, reviewSchema } from "@/lib/review-validation";
-
-function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !serviceRoleKey) {
-    return null;
-  }
-
-  return { url: url.replace(/\/+$/, ""), serviceRoleKey };
-}
+import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 export async function GET() {
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
 
   if (!config) {
     return NextResponse.json(
@@ -91,7 +81,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
 
   if (!config) {
     return NextResponse.json(

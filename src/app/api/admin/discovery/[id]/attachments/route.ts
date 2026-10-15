@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isDiscoveryAdmin, isSameOriginRequest } from "@/lib/discovery-auth";
+import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 const idSchema = z.string().uuid();
 const attachmentSchema = z.object({
@@ -8,14 +9,6 @@ const attachmentSchema = z.object({
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\/[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(pdf|jpg|png|webp)$/i,
   ),
 });
-
-function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return url && serviceRoleKey
-    ? { url: url.replace(/\/+$/, ""), serviceRoleKey }
-    : null;
-}
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!isSameOriginRequest(request)) {
@@ -41,7 +34,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ success: false, message: "Invalid attachment path." }, { status: 400 });
   }
 
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
   if (!config) {
     return NextResponse.json({ success: false, message: "Supabase storage is not configured." }, { status: 503 });
   }

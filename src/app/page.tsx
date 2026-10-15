@@ -1,224 +1,241 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight, ArrowUpRight, CircleHelp, GitBranch, Lightbulb, ShieldCheck, Smartphone } from "lucide-react";
-import { faqs, featuredProjects, principles } from "@/data/site";
+import { ArrowRight, ArrowUpRight, Check, Search } from "lucide-react";
+import { featuredProjects } from "@/data/site";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createPageMetadata(
-  "Digital design and development",
-  "Rapidlyon designs clear digital experiences and builds modern websites and products for ambitious teams.",
+  "UX design and web development for growing teams",
+  "Rapidlyon is an independent digital design and development studio helping founders and teams shape clear user experiences and responsive websites.",
   "/",
 );
 
-const studioPrinciples = [
-  { icon: Lightbulb, title: "Clarity before complexity", detail: "Start with the user’s real task" },
-  { icon: GitBranch, title: "Design meets engineering", detail: "One connected delivery team" },
-  { icon: Smartphone, title: "Responsive by design", detail: "Made for every screen size" },
-  { icon: ShieldCheck, title: "Straightforward process", detail: "Clear scope and next steps" },
+const serviceHighlights = [
+  {
+    title: "UX / UI design",
+    description: "Turn an early idea or confusing journey into a clear structure, useful flows, and considered responsive interfaces.",
+    points: ["Discovery and project framing", "Sitemap, flows, and wireframes", "UI design, prototype, and handoff"],
+    href: "/services/ux-ui-design",
+  },
+  {
+    title: "Web development",
+    description: "Build a responsive, maintainable website from approved designs, with the agreed details checked before handoff.",
+    points: ["Responsive implementation", "Agreed forms and integrations", "Quality review and launch handoff"],
+    href: "/services/web-development",
+  },
+  {
+    title: "Product & MVP work",
+    description: "Focus the first release around the essential product journey instead of trying to build every possible feature at once.",
+    points: ["Product framing and scope", "Critical UX flows", "A practical path from design to build"],
+    href: "/services/saas-mvp",
+  },
 ];
+
+const project = featuredProjects[0];
 
 export default function HomePage() {
   return (
-    <div className="bg-[#F5F5EF]">
-      <section className="overflow-hidden bg-[#171916] text-[#F5F5EF]">
-        <div className="mx-auto max-w-7xl px-4 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8 lg:pt-24">
-          <p className="mb-7 text-xs font-medium uppercase tracking-[0.22em] text-[#B6E76A]">
-            Independent digital design & development studio
-          </p>
-          <h1 className="max-w-full text-[clamp(3.25rem,8.5vw,7.5rem)] font-semibold leading-[0.98] tracking-[-0.045em]">
-            Digital products, designed with purpose. Built for impact.
-          </h1>
-          <p className="mt-8 max-w-4xl text-lg leading-8 text-white/75 sm:text-xl sm:leading-9">
-            UX/UI design and modern web development for teams turning ambitious ideas into useful digital products.
-          </p>
-          <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-            <Link
-              href="/discovery"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#B6E76A] px-6 py-3.5 text-sm font-semibold text-[#171916] transition hover:bg-[#c7ef8e]"
-            >
-              Discuss your project <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/work"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3.5 text-sm font-medium text-white transition hover:border-white/50"
-            >
-              Explore our work <ArrowRight size={16} />
+    <div className="bg-paper">
+      <section className="overflow-hidden bg-ink text-paper">
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:px-8 lg:pt-24">
+          <div>
+            <p className="mb-6 text-xs font-medium uppercase tracking-label text-accent">
+                Independent digital design & development studio
+            </p>
+            <h1 className="max-w-4xl text-display font-semibold leading-display tracking-display-tight">
+              Make your offer easier to understand—and act on.
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-on-dark/75 sm:text-xl">
+              We work with founders and teams to make digital products easier to understand, navigate, and build—from the first product decisions through to a responsive website.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/contact?intent=conversation"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-accent-bright"
+              >
+                Tell us what you’re building <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/work"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-on-dark/25 px-6 py-3.5 text-sm font-medium text-on-dark transition hover:border-on-dark/60"
+              >
+                Explore our work <ArrowRight size={16} />
+              </Link>
+            </div>
+            <p className="mt-5 text-sm text-on-dark/60">
+              Not sure where to start?{" "}
+              <Link href="/contact?intent=conversation" className="text-on-dark underline decoration-white/40 underline-offset-4 hover:decoration-white">
+                A short first conversation is enough.
+              </Link>
+            </p>
+          </div>
+
+          <div className="rounded-card border border-on-dark/10 bg-on-dark/[0.04] p-6 sm:p-7">
+            <p className="text-xs font-medium uppercase tracking-label-wide text-accent">Who we are</p>
+            <h2 className="mt-4 text-2xl font-semibold leading-tight tracking-display-tight sm:text-3xl">
+              A small independent studio, close to the work.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-on-dark/75">
+              Rapidlyon brings UX thinking, interface design, and web development together. We keep the conversation direct, make decisions visible, and agree on the work before moving into delivery.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {["Independent studio", "Design and engineering", "Remote-first"].map((item) => (
+                <span key={item} className="rounded-full border border-on-dark/15 px-3 py-1.5 text-xs text-on-dark/75">{item}</span>
+              ))}
+            </div>
+            <Link href="/about" className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-on-dark">
+              Get to know Rapidlyon <ArrowRight size={16} />
             </Link>
           </div>
         </div>
       </section>
 
-      <section aria-label="How we work" className="border-b border-black/10 bg-white">
-        <div className="mx-auto grid max-w-7xl divide-y divide-black/10 px-4 sm:px-6 md:grid-cols-2 md:divide-x md:divide-y-0 lg:grid-cols-4 lg:px-8">
-          {studioPrinciples.map((feature) => {
-            const Icon = feature.icon;
-
-            return (
-              <div key={feature.title} className="flex items-center gap-4 py-5 md:px-5 lg:px-6">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#EAF3C9] text-[#171916]">
-                  <Icon aria-hidden="true" size={20} strokeWidth={1.75} />
-                </span>
-                <div>
-                  <h2 className="text-sm font-semibold text-[#171916]">{feature.title}</h2>
-                  <p className="mt-1 text-xs leading-5 text-[#62665e]">{feature.detail}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-
-      <section className="border-y border-black/5 bg-[#171916] py-20 text-[#F5F5EF]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Design × engineering"
-            title="Strategy, interface design, and build working in one rhythm."
-            description="The final experience is stronger when product thinking and implementation move together from the first decision."
-            tone="dark"
-          />
-
-          <div className="mt-10 grid gap-5 md:grid-cols-4">
-            {[
-              { label: "Discover", text: "User problems, business context, and opportunities are mapped before a screen gets designed." },
-              { label: "Design", text: "We shape flows, systems, and interfaces so the experience feels intuitive and intentional." },
-              { label: "Build", text: "We turn the approved interface into a responsive, accessible, maintainable website or product." },
-              { label: "Launch", text: "We refine final quality and support a clean handoff for real-world use." },
-            ].map((step, index) => (
-              <div key={step.label} className="rounded-[24px] border border-white/10 bg-white/5 p-5">
-                <div className="mb-6 flex items-center justify-between text-xs uppercase tracking-[0.18em] text-[#B6E76A]">
-                  <span>0{index + 1}</span>
-                  <span>{step.label}</span>
-                </div>
-                <p className="text-base leading-7 text-[#e9ece5]">{step.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-black/5 bg-[#171916] px-4 py-8 text-center sm:px-6 lg:px-8">
-        <Link href="/process" className="inline-flex items-center gap-2 text-sm font-medium text-[#B6E76A] hover:text-white">
-          See the full project process <ArrowRight size={16} />
-        </Link>
-      </section>
-
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Working principles"
-            title="We build with clarity, not noise."
-            description="The studio works best when strategy, design, and engineering stay in conversation rather than in separate silos."
-          />
-
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {principles.map((principle, index) => (
-              <div key={principle} className="rounded-[24px] border border-black/5 bg-[#F5F5EF] p-6">
-                <div className="mb-5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#B6E76A] text-sm font-semibold text-[#171916]">
-                  {index + 1}
-                </div>
-                <p className="text-lg leading-8 text-[#171916]">{principle}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
- <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Live project"
-          title="A real storefront, built for real product discovery."
-          description="Explore a live personal project for a mobile-parts retailer. The details describe what is visible on the site; no sales or performance results are claimed."
-          level="h2"
-        />
-
-        <div className="mt-10 grid max-w-5xl gap-6">
-          {featuredProjects.map((project) => (
-            <Link
-              key={project.slug}
-              href={`/work/${project.slug}`}
-              className="group overflow-hidden rounded-[28px] border border-black/5 bg-white p-5 shadow-[0_12px_30px_rgba(23,25,22,0.04)] transition hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(23,25,22,0.08)]"
-            >
-              <div className="mb-6 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-[#73776D]">
-                <span>{project.type}</span>
-                <span>{project.label}</span>
-              </div>
-              <div className="mb-4 flex min-h-56 flex-col justify-between rounded-[22px] bg-[#171916] p-6 text-[#F5F5EF]">
-                <div className="flex h-full flex-col justify-between">
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/75">
-                    <span>Live storefront</span>
-                    <ArrowUpRight size={14} />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-semibold tracking-tight">Umer Mobile Parts</p>
-                    <p className="mt-2 text-sm text-white/70">Wholesale & retail · mobile spare parts</p>
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {["Displays", "Batteries", "Charging parts"].map((category) => (
-                        <span key={category} className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-white/85">
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-2xl tracking-[-0.06em] text-[#171916]">{project.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-[#4f544d]">{project.summary}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {project.services.map((service) => (
-                    <span key={service} className="rounded-full border border-black/10 bg-[#F5F5EF] px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-[#171916]">
-                      {service}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Link>
+      <section aria-label="Rapidlyon project facts" className="border-b border-divider-strong bg-on-dark">
+        <div className="mx-auto grid max-w-7xl gap-5 px-4 py-5 text-sm sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+          {[
+            "One-to-one project communication",
+            "Scope and deliverables agreed before work",
+            "A real project you can inspect",
+            "Clear handoff and next steps",
+          ].map((fact) => (
+            <p key={fact} className="flex items-center gap-3 text-body-strong">
+              <Check size={16} aria-hidden="true" className="shrink-0 text-accent-deep" />
+              {fact}
+            </p>
           ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="FAQ preview"
-          title="Common questions before the first conversation."
-        />
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-label text-muted">Work you can inspect</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight tracking-display-tight text-ink md:text-5xl">
+              Not just a polished promise. A live storefront.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-body">
+              {project.summary} See how the visible catalog gives shoppers ways to browse parts, brands, and product listings.
+            </p>
+            <p className="mt-4 text-sm leading-6 text-muted">
+              This is a published independent personal project. We do not present it as client work or claim unverified sales or conversion results.
+            </p>
+            <Link href={`/work/${project.slug}`} className="mt-7 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-medium text-on-dark hover:bg-ink-hover">
+              Explore the project breakdown <ArrowRight size={16} />
+            </Link>
+          </div>
 
-        <div className="mt-10 space-y-4">
-          {faqs.slice(0, 4).map((item) => (
-            <div key={item.question} className="rounded-[24px] border border-black/5 bg-white p-5">
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="text-lg font-medium text-[#171916]">{item.question}</h3>
-                <div className="rounded-full border border-black/10 p-1 text-[#171916]" aria-hidden="true">
-                  <CircleHelp size={14} />
-                </div>
-                <div className="mt-6">
-                  <Link href="/faq" className="inline-flex items-center gap-2 text-sm font-semibold text-[#171916] underline decoration-black/20 underline-offset-4 hover:decoration-black">
-                    View all FAQs <ArrowRight size={16} />
-                  </Link>
-                </div>
+          <div className="rounded-card bg-ink p-5 text-paper sm:p-7">
+            <div className="flex items-center justify-between border-b border-on-dark/15 pb-4">
+              <div>
+                <p className="text-xs uppercase tracking-label-tight text-on-dark/55">Live personal project</p>
+                <h3 className="mt-1 text-xl font-semibold">{project.title}</h3>
               </div>
-              <p className="mt-3 text-sm leading-7 text-[#4f544d]">{item.answer}</p>
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label="Visit Umer Mobile Parts storefront" className="rounded-full border border-on-dark/20 p-3 text-on-dark hover:border-accent hover:text-accent">
+                <ArrowUpRight size={18} />
+              </a>
             </div>
-          ))}
+            <p className="mt-5 text-sm leading-6 text-on-dark/70">Visible product discovery paths on the storefront</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {[
+                { label: "Search", text: "Find a product in the catalog", icon: Search },
+                { label: "Browse", text: "Explore by part category", icon: ArrowRight },
+                { label: "Choose", text: "Review brand and model listings", icon: Check },
+              ].map((step, index) => {
+                const Icon = step.icon;
+
+                return (
+                  <div key={step.label} className="rounded-2xl border border-on-dark/10 bg-on-dark/5 p-4">
+                    <span className="flex size-9 items-center justify-center rounded-full bg-accent text-ink">
+                      <Icon size={17} aria-hidden="true" />
+                    </span>
+                    <p className="mt-4 text-xs uppercase tracking-label-small text-accent">0{index + 1} · {step.label}</p>
+                    <p className="mt-2 text-sm leading-6 text-on-dark/85">{step.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-5 text-xs leading-5 text-on-dark/45">
+              These are observable storefront paths—not user-research claims or performance metrics.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <div className="rounded-[32px] border border-black/5 bg-[#EAF3C9] p-8 sm:p-10 lg:p-14">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-[#171916]">Let’s build something useful</p>
-              <h2 className="mt-4 text-4xl tracking-[-0.07em] text-[#171916] md:text-6xl">Have an idea worth building?</h2>
-            </div>
-            <Link
-              href="/discovery"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#171916] px-6 py-3.5 text-sm font-medium text-[#F5F5EF] transition hover:bg-[#2a2d27]"
-            >
-              Discuss your project <ArrowRight size={16} />
+      <section className="bg-on-dark py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="What we do"
+            title="From a product question to a working digital experience."
+            description="Choose the kind of help you need. Design, development, and product work can be scoped separately or brought together around your goals."
+          />
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {serviceHighlights.map((service) => (
+              <article key={service.title} className="flex flex-col rounded-soft border border-divider bg-paper p-6 text-ink">
+                <h3 className="text-2xl font-semibold tracking-display-tight">{service.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-body-muted">{service.description}</p>
+                <ul className="mt-6 flex-1 space-y-3">
+                  {service.points.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm leading-6 text-body">
+                      <Check size={16} aria-hidden="true" className="mt-1 shrink-0 text-accent-deep" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href={service.href} className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-accent-deep">
+                  Explore {service.title} <ArrowRight size={16} />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-ink py-20 text-paper">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="A working rhythm"
+            title="Know what happens before the first screen—and after it."
+            description="A small, visible set of decisions keeps scope understandable and feedback useful."
+            tone="dark"
+          />
+          <ol className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              { title: "Discover", text: "Align on audience, goals, constraints, and what the project must help someone do." },
+              { title: "Define", text: "Agree pages, unique templates, deliverables, revision rounds, assumptions, and exclusions." },
+              { title: "Design", text: "Map and review the journeys, wireframes, responsive UI, and prototype for the selected scope." },
+              { title: "Build & hand off", text: "Implement the approved scope, check the agreed experience, and prepare the build for handoff." },
+            ].map((step, index) => (
+              <li key={step.title} className="rounded-control border border-on-dark/10 bg-on-dark/[0.04] p-5">
+                <p className="text-xs font-medium uppercase tracking-label-tight text-accent">Step 0{index + 1}</p>
+                <h3 className="mt-4 text-xl font-semibold">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-on-dark/70">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+          <Link href="/process" className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-on-dark">
+            See the detailed process <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="grid gap-8 rounded-feature border border-divider bg-accent-soft p-7 md:grid-cols-[1fr_auto] md:items-center md:p-10">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-label-wide text-accent-deep">Start with a conversation</p>
+            <h2 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-display-tight text-ink md:text-4xl">
+              You do not need a perfect brief. Tell us what you are trying to make better.
+            </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-body">
+              Share a few details or send a longer discovery brief when you are ready. We will start by understanding the problem, not pushing you into a preset solution.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
+            <Link href="/contact?intent=conversation" className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-medium text-on-dark hover:bg-ink-hover">
+              Start a conversation <ArrowRight size={16} />
+            </Link>
+            <Link href="/discovery" className="inline-flex items-center justify-center rounded-full border border-ink/20 px-5 py-3 text-sm font-medium text-ink hover:bg-on-dark/50">
+              Share a detailed brief
             </Link>
           </div>
         </div>

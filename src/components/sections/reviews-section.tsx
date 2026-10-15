@@ -117,7 +117,7 @@ export function ReviewsSection() {
   };
 
   return (
-    <section className="bg-white py-20" aria-labelledby="reviews-title">
+    <section className="bg-on-dark py-20" aria-labelledby="reviews-title">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
         <div>
           <SectionHeading
@@ -128,53 +128,53 @@ export function ReviewsSection() {
 
           <div className="mt-8 space-y-4" aria-live="polite">
             {reviewsStatus === "loading" ? (
-              <p className="rounded-2xl border border-black/10 bg-[#F5F5EF] p-5 text-sm text-[#4f544d]">Loading published reviews…</p>
+              <p className="rounded-2xl border border-divider-strong bg-paper p-5 text-sm text-body">Loading published reviews…</p>
             ) : reviewsStatus === "error" ? (
-              <p role="status" className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+              <p role="status" className="rounded-2xl border border-warning-line bg-warning-soft p-5 text-sm text-warning-strong">
                 {reviewsMessage || "Published reviews are temporarily unavailable."}
               </p>
             ) : reviews.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-black/15 bg-[#F5F5EF] p-6">
-                <p className="font-medium text-[#171916]">No published reviews yet.</p>
-                <p className="mt-2 text-sm leading-6 text-[#4f544d]">
+              <div className="rounded-2xl border border-dashed border-black/15 bg-paper p-6">
+                <p className="font-medium text-ink">No published reviews yet.</p>
+                <p className="mt-2 text-sm leading-6 text-body">
                   If you have worked with Rapidlyon, you can share your experience. Reviews are not shown publicly until they have been moderated.
                 </p>
               </div>
             ) : (
               reviews.map((review) => (
-                <article key={review.id} className="rounded-2xl border border-black/10 bg-[#F5F5EF] p-6">
+                <article key={review.id} className="rounded-2xl border border-divider-strong bg-paper p-6">
                   <div className="flex gap-1" role="img" aria-label={`${review.rating} out of 5 stars`}>
                     {Array.from({ length: 5 }, (_, index) => (
-                      <Star key={index} aria-hidden="true" size={16} className={index < review.rating ? "fill-[#d3a625] text-[#d3a625]" : "text-[#a3a69e]"} />
+                      <Star key={index} aria-hidden="true" size={16} className={index < review.rating ? "fill-warning text-warning" : "text-muted-soft"} />
                     ))}
                   </div>
-                  <p className="mt-4 leading-7 text-[#30332e]">{review.review}</p>
-                  <p className="mt-4 text-sm font-semibold text-[#171916]">{review.name}</p>
-                  <p className="mt-1 text-xs text-[#62665e]">Submitted review · not independently verified</p>
+                  <p className="mt-4 leading-7 text-charcoal">{review.review}</p>
+                  <p className="mt-4 text-sm font-semibold text-ink">{review.name}</p>
+                  <p className="mt-1 text-xs text-body-muted">Submitted review · not independently verified</p>
                 </article>
               ))
             )}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="rounded-[28px] border border-black/5 bg-[#F5F5EF] p-6 md:p-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-[#62665e]">Share your experience</p>
-          <h2 id="reviews-title" className="mt-3 text-2xl font-semibold text-[#171916]">Leave a review</h2>
-          <p className="mt-2 text-sm leading-6 text-[#4f544d]">Please only submit feedback about work you have personally experienced.</p>
+        <form onSubmit={handleSubmit} noValidate className="rounded-card border border-divider bg-paper p-6 md:p-8">
+          <p className="text-xs font-medium uppercase tracking-label text-body-muted">Share your experience</p>
+          <h2 id="reviews-title" className="mt-3 text-2xl font-semibold text-ink">Leave a review</h2>
+          <p className="mt-2 text-sm leading-6 text-body">Please only submit feedback about work you have personally experienced.</p>
 
           <div className="mt-6">
-            <label htmlFor="review-name" className="mb-2 block text-sm font-medium text-[#171916]">Name <span aria-hidden="true">*</span></label>
-            <input id="review-name" name="name" autoComplete="name" required aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "review-name-error" : undefined} value={values.name} onChange={handleChange} className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]" />
-            {errors.name ? <p id="review-name-error" className="mt-1 text-sm text-red-700">{errors.name}</p> : null}
+            <label htmlFor="review-name" className="mb-2 block text-sm font-medium text-ink">Name <span aria-hidden="true">*</span></label>
+            <input id="review-name" name="name" autoComplete="name" required aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "review-name-error" : undefined} value={values.name} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink" />
+            {errors.name ? <p id="review-name-error" className="mt-1 text-sm text-danger-strong">{errors.name}</p> : null}
           </div>
 
           <fieldset className="mt-5">
-            <legend className="mb-2 text-sm font-medium text-[#171916]">Rating <span aria-hidden="true">*</span></legend>
+            <legend className="mb-2 text-sm font-medium text-ink">Rating <span aria-hidden="true">*</span></legend>
             <div className="flex gap-2">
               {Array.from({ length: 5 }, (_, index) => {
                 const rating = index + 1;
                 return (
-                  <label key={rating} htmlFor={`review-rating-${rating}`} className="cursor-pointer rounded-lg p-1 text-[#b08a1f] outline-offset-2 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-[#171916]">
+                  <label key={rating} htmlFor={`review-rating-${rating}`} className="cursor-pointer rounded-lg p-1 text-warning-deep outline-offset-2 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ink">
                     <input
                       id={`review-rating-${rating}`}
                       className="peer sr-only"
@@ -190,25 +190,25 @@ export function ReviewsSection() {
                 );
               })}
             </div>
-            {errors.rating ? <p className="mt-1 text-sm text-red-700">{errors.rating}</p> : null}
+            {errors.rating ? <p className="mt-1 text-sm text-danger-strong">{errors.rating}</p> : null}
           </fieldset>
 
           <div className="mt-5">
-            <label htmlFor="review-text" className="mb-2 block text-sm font-medium text-[#171916]">Your review <span aria-hidden="true">*</span></label>
-            <textarea id="review-text" name="review" required aria-invalid={Boolean(errors.review)} aria-describedby={errors.review ? "review-text-error" : undefined} value={values.review} onChange={handleChange} rows={5} maxLength={1200} className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]" />
-            {errors.review ? <p id="review-text-error" className="mt-1 text-sm text-red-700">{errors.review}</p> : null}
+            <label htmlFor="review-text" className="mb-2 block text-sm font-medium text-ink">Your review <span aria-hidden="true">*</span></label>
+            <textarea id="review-text" name="review" required aria-invalid={Boolean(errors.review)} aria-describedby={errors.review ? "review-text-error" : undefined} value={values.review} onChange={handleChange} rows={5} maxLength={1200} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink" />
+            {errors.review ? <p id="review-text-error" className="mt-1 text-sm text-danger-strong">{errors.review}</p> : null}
           </div>
 
           {message ? (
-            <p role={status === "error" ? "alert" : "status"} aria-live={status === "error" ? "assertive" : "polite"} className={`mt-5 rounded-xl px-4 py-3 text-sm ${status === "success" ? "border border-emerald-200 bg-emerald-50 text-emerald-800" : status === "error" ? "border border-red-200 bg-red-50 text-red-800" : "border border-black/10 bg-white text-[#30332e]"}`}>
+            <p role={status === "error" ? "alert" : "status"} aria-live={status === "error" ? "assertive" : "polite"} className={`mt-5 rounded-xl px-4 py-3 text-sm ${status === "success" ? "border border-success-line bg-success-soft text-success-strong" : status === "error" ? "border border-danger-line bg-danger-soft text-danger-deep" : "border border-divider-strong bg-on-dark text-charcoal"}`}>
               {message}
             </p>
           ) : null}
 
-          <button type="submit" disabled={status === "loading"} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#171916] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#30332e] disabled:cursor-wait disabled:opacity-60">
+          <button type="submit" disabled={status === "loading"} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-ink px-5 py-3 text-sm font-medium text-on-dark transition hover:bg-charcoal disabled:cursor-wait disabled:opacity-60">
             {status === "loading" ? "Submitting…" : "Submit for review"}
           </button>
-          <p className="mt-3 text-xs leading-5 text-[#62665e]">Reviews are moderated before publication. No rating is displayed until a review is approved.</p>
+          <p className="mt-3 text-xs leading-5 text-body-muted">Reviews are moderated before publication. No rating is displayed until a review is approved.</p>
         </form>
       </div>
     </section>

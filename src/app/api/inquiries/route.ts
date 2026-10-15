@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { inquirySchema } from "@/lib/validation";
 import { siteConfig } from "@/data/site";
+import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -29,10 +30,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const config = getSupabaseServerConfig();
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!config) {
     return NextResponse.json(
       {
         success: false,
@@ -43,11 +43,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${supabaseUrl.replace(/\/+$/, "")}/rest/v1/inquiries`, {
+    const response = await fetch(`${config.url}/rest/v1/inquiries`, {
       method: "POST",
       headers: {
-        apikey: serviceRoleKey,
-        Authorization: `Bearer ${serviceRoleKey}`,
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },

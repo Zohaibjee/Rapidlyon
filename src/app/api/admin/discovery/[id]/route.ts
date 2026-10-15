@@ -2,20 +2,13 @@ import { NextResponse } from "next/server";
 import { isDiscoveryAdmin, isSameOriginRequest } from "@/lib/discovery-auth";
 import { discoveryStatusSchema } from "@/lib/discovery";
 import { z } from "zod";
+import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 const idSchema = z.string().uuid();
 const updateSchema = z.object({
   status: discoveryStatusSchema,
   internalNotes: z.string().max(10000),
 });
-
-function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return url && serviceRoleKey
-    ? { url: url.replace(/\/+$/, ""), serviceRoleKey }
-    : null;
-}
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -29,7 +22,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
     return NextResponse.json({ success: false, message: "Invalid submission ID." }, { status: 400 });
   }
 
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
   if (!config) {
     return NextResponse.json({ success: false, message: "Supabase storage is not configured." }, { status: 503 });
   }
@@ -86,7 +79,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     return NextResponse.json({ success: false, message: parsed.error.issues[0]?.message || "Invalid update." }, { status: 400 });
   }
 
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
   if (!config) {
     return NextResponse.json({ success: false, message: "Supabase storage is not configured." }, { status: 503 });
   }

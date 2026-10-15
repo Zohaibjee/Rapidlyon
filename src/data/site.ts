@@ -1,3 +1,5 @@
+import { workProjectSchema, type WorkProject } from "@/lib/work-project-schema";
+
 export type NavItem = {
   label: string;
   href: string;
@@ -15,22 +17,7 @@ export type Service = {
   process: { title: string; text: string }[];
 };
 
-export type Project = {
-  slug: string;
-  title: string;
-  type: string;
-  summary: string;
-  role: string;
-  services: string[];
-  stack: string[];
-  objective: string;
-  problem: string;
-  process: string[];
-  decisions: string[];
-  implementation: string[];
-  liveUrl?: string;
-  label: string;
-};
+export type Project = WorkProject;
 
 export const siteConfig = {
   brand: "Rapidlyon",
@@ -41,6 +28,7 @@ export const siteConfig = {
   navigation: [
     { label: "Work", href: "/work" },
     { label: "Services", href: "/services" },
+    { label: "Pricing", href: "/pricing" },
     { label: "Insights", href: "/insights" },
     { label: "FAQ", href: "/faq" },
     { label: "Contact", href: "/contact" },
@@ -181,64 +169,218 @@ export const services: Service[] = [
 ];
 
 export const featuredProjects: Project[] = [
-  {
+  workProjectSchema.parse({
     slug: "umer-mobile-parts",
     title: "Umer Mobile Parts",
-    type: "Live e-commerce storefront",
+    discipline: "development",
+    status: "published",
+    isFeatured: true,
+    displayOrder: 1,
+    projectType: "Live e-commerce storefront",
     summary:
       "A live wholesale and retail storefront for mobile spare parts, with product search, category browsing, brand navigation, and featured products.",
     role: "Independent personal project",
+    clientOrContext: "Independent personal project for a mobile-parts retailer",
+    visibilityLabel: "Live personal project",
     services: ["E-commerce", "Web Development"],
-    stack: [],
-    objective:
-      "Help shoppers find mobile spare parts through product categories, mobile brands, and model-specific product listings.",
-    problem:
-      "The public storefront focuses on mobile repair parts and presents both retail product browsing and wholesale messaging.",
-    process: [
-      "Search the catalog using the mobile spare-parts search field",
-      "Browse parts through the visible category and mobile-brand navigation",
-      "Open product listings to review the displayed model and product information",
+    objective: "Help shoppers find mobile spare parts through product categories, mobile brands, and model-specific product listings.",
+    context: "The storefront serves both wholesale and retail visitors looking for mobile repair parts. The public experience presents product discovery and retailer messaging.",
+    challenge: "Present a broad mobile-parts catalog with recognizable routes into search, part categories, and mobile-brand or model listings.",
+    development: {
+      implementation: {
+        summary: "The live storefront presents the following publicly visible product and business pathways.",
+        points: [
+          "Product search and category browsing.",
+          "Mobile-brand and model-specific product listings.",
+          "Featured products and additional product listings on the homepage.",
+          "Wholesale messaging and customer-support pathways.",
+        ],
+      },
+    },
+    observedJourneys: [
+      "Search the catalog using the mobile spare-parts search field.",
+      "Browse parts through the visible category and mobile-brand navigation.",
+      "Open product listings to review the displayed model and product information.",
     ],
-    decisions: [
-      "Expose product discovery through search and category entry points",
-      "Organize visible catalog sections around part type and mobile brand",
-      "Surface wholesale messaging alongside retail product discovery",
+    visibleExperienceChoices: [
+      "Product discovery is exposed through search and category entry points.",
+      "Visible catalog sections are organized around part type and mobile brand.",
+      "Wholesale messaging is presented alongside retail product discovery.",
     ],
-    implementation: [
-      "Live public storefront with product, category, and brand browsing",
-      "Featured products and additional product listings on the homepage",
-      "Wholesale and customer-support pathways presented on the storefront",
-    ],
+    verifiedOutcomes: [],
+    evidenceNote: "This case study describes the current public storefront only. No sales, conversion, performance, or user-research results are claimed.",
     liveUrl: "https://mobile-studio-bgdht0n3a-zauras25s-projects.vercel.app/",
-    label: "Live personal project",
-  },
+    gallery: [],
+  }),
+  workProjectSchema.parse({
+    slug: "trailmix-local-discovery-concept",
+    title: "TrailMix — local discovery concept",
+    discipline: "ux-design",
+    status: "published",
+    isFeatured: true,
+    displayOrder: 2,
+    projectType: "Speculative UX/UI concept",
+    summary:
+      "A portfolio concept exploring how a local discovery app could help people find a nearby activity that fits their time, interests, and group.",
+    role: "Self-initiated concept · UX/UI design",
+    clientOrContext: "Fictional brief created for portfolio demonstration",
+    visibilityLabel: "Concept project · not client work",
+    services: ["Product discovery", "UX design", "Information architecture", "Wireframes", "UI concept"],
+    objective:
+      "Explore a clearer path from “what can we do nearby?” to a small set of relevant local activities, with enough detail to decide what to do next.",
+    context:
+      "This is a speculative concept based on an invented brief. The scenario assumes people may have limited time, mixed interests, and different group needs when choosing something nearby. Those assumptions have not been confirmed through research.",
+    challenge:
+      "Avoid making discovery feel like another endless feed. The concept focuses on narrowing options through a few practical choices, then showing useful details before asking someone to commit.",
+    uxDesign: {
+      discovery: {
+        summary:
+          "Started from a fictional portfolio brief, not client research. The initial assumptions were that people need quick ways to express available time, location, and activity preferences.",
+        points: [
+          "Defined the concept audience as people looking for a nearby activity, alone or with others.",
+          "Recorded time, distance, group needs, and uncertainty about availability as assumptions to validate.",
+          "No interviews, analytics review, or field research were conducted for this fictional concept.",
+        ],
+      },
+      define: {
+        summary:
+          "Framed the experience around helping someone make a confident short-list, rather than browsing an unfiltered catalog.",
+        points: [
+          "Primary concept task: find and compare a few suitable activities nearby.",
+          "Keep the first decision set lightweight: when, how far, and what kind of activity.",
+          "Show practical decision details—duration, location, accessibility notes, and booking requirements—before an external action.",
+        ],
+      },
+      sitemapAndIa: {
+        summary:
+          "Grouped the concept around discovery, activity details, saved ideas, and a simple profile area.",
+        points: [
+          "Explore: set a time window, area, and interest, then review a focused list or map.",
+          "Activity detail: understand the experience, practical requirements, and next step.",
+          "Saved: keep a short-list to compare or share with a group.",
+          "Account features and booking are illustrative directions only; no backend or live service exists.",
+        ],
+      },
+      wireframes: {
+        summary:
+          "Outlined the key screens before adding visual styling, with emphasis on progressive choices and useful activity information.",
+        points: [
+          "Explore entry with a clear location and activity prompt.",
+          "Results state with filter controls, concise activity cards, and a map/list choice.",
+          "Detail page that surfaces duration, distance, suitability, and booking context.",
+          "Empty and no-results states that let a person broaden the search instead of restarting.",
+        ],
+      },
+      uiDesign: {
+        summary:
+          "Developed a visual direction for an approachable local guide: calm neutral surfaces, a warm accent, clear type hierarchy, and distinct activity categories.",
+        points: [
+          "Prioritized readable activity cards and scannable practical details.",
+          "Used category color as a supporting cue, not the only way to identify an activity.",
+          "Considered loading, selected-filter, no-results, and saved states as part of the concept.",
+        ],
+      },
+      designAudit: {
+        summary:
+          "Reviewed the proposed screens against the concept goals and common interface-quality checks. This was a self-review, not an independent audit.",
+        points: [
+          "Checked that filters and selected states are distinguishable.",
+          "Checked content hierarchy for activity name, location, duration, and action.",
+          "Flagged contrast, keyboard behavior, responsive layouts, and real content quality for validation in a future build.",
+        ],
+      },
+      prototypeTesting: {
+        summary:
+          "No usability testing was conducted. Testing is a proposed next step, not a result of this concept.",
+        points: [
+          "Next validation step: ask representative people to find an activity for a specific time, distance, and group.",
+          "Observe whether they can compare options and identify booking requirements without prompting.",
+          "Revise the flow based on observed confusion; no success metrics or usability findings are claimed here.",
+        ],
+      },
+      developerHandoff: {
+        summary:
+          "Outlined what a future handoff would need; this concept has not been implemented or delivered to a development team.",
+        points: [
+          "Document responsive behavior, filter states, empty states, and activity-detail content requirements.",
+          "Define reusable activity-card and filter components after validating the information model.",
+          "Confirm data source, availability, map, and booking integrations before estimating implementation.",
+        ],
+      },
+    },
+    observedJourneys: [],
+    visibleExperienceChoices: [
+      "Concept direction: choose a time window, distance, and activity interest before browsing.",
+      "Concept direction: compare activity details before leaving for booking or directions.",
+      "Concept direction: save or share a short-list when choosing with other people.",
+    ],
+    verifiedOutcomes: [],
+    evidenceNote:
+      "Fictional portfolio concept only—not commissioned client work, a live product, or a validated design. The brief and user needs are assumptions; no user interviews, usability tests, implementation, or outcome metrics are claimed.",
+    gallery: [],
+  }),
 ];
 
 export const faqs = [
   {
     question: "What does a typical project engagement look like?",
     answer:
-      "Most engagements begin with discovery and project framing, then move into design, implementation, QA, and launch support. We keep collaboration transparent and practical throughout the process.",
+      "We start by understanding the audience, goals, available materials, and constraints. Then we confirm a written scope and move through the agreed design or development work, review, QA where relevant, and handoff. The exact steps depend on the service and package you choose.",
   },
   {
-    question: "How long does a website or product project usually take?",
+    question: "What UX/UI design work can you help with?",
     answer:
-      "Timelines depend on scope, number of pages, and complexity. A focused marketing site may take a few weeks, while a more involved product or redesign may take longer and can be planned in phases.",
+      "Depending on the agreed scope, UX/UI work can include discovery, defining priorities, sitemap and information architecture, wireframes, interface design, a clickable prototype, design review, and developer handoff. Research and usability testing are included only when they are explicitly part of the project scope.",
   },
   {
-    question: "Do you work with in-house teams or external stakeholders?",
+    question: "Can I request design only, development only, or both?",
     answer:
-      "Yes. We often work alongside founders, marketing teams, product teams, and developers who need a design and implementation partner to move work forward efficiently.",
+      "Yes. You can choose UX design, development from approved designs, or a combined design-and-development engagement. The Pricing page compares the available starting scopes for each option.",
   },
   {
-    question: "Can you help with both strategy and implementation?",
+    question: "How is my project price determined?",
     answer:
-      "Yes. Rapidlyon is structured to cover UX thinking, interface design, and implementation, so the work moves from concept to a usable product without unnecessary handoff friction.",
+      "Prices on the Pricing page are one-time USD starting fees for the listed page, template, and deliverable limits. The final quote depends on the number of pages and unique layouts, readiness of designs and content, required interactions or integrations, and any additional research or features. We confirm the exact scope and fee in writing before work begins.",
   },
   {
-    question: "Is there a minimum project size?",
+    question: "What is included in a package, and what may cost extra?",
     answer:
-      "We’re open to projects that are strategic and meaningful. The right fit depends on the goals, timeline, and complexity of the work.",
+      "Each package lists its page or template limits, deliverables, and design revision rounds. Work beyond those limits—including unlisted features, extra templates, custom backend systems, accounts, e-commerce, copywriting, or paid third-party services—is not automatically included and must be scoped and approved separately.",
+  },
+  {
+    question: "How do design revision rounds work?",
+    answer:
+      "A revision round is one consolidated set of feedback on the presented design, followed by updates within the agreed direction. The number of rounds depends on the selected package. A new direction, additional feature, or substantial scope change may need a separate estimate and written approval.",
+  },
+  {
+    question: "Can you build a website from designs my team already has?",
+    answer:
+      "Yes. Development can start from approved designs, provided the required screens, responsive behavior, content, and assets are ready or clearly listed in the scope. If important states or requirements are missing, we will identify them before confirming the build estimate.",
+  },
+  {
+    question: "Do your packages automatically include a custom backend, accounts, or e-commerce?",
+    answer:
+      "No. These features are not automatically included in the listed starting packages. Share what the product needs to do and we can assess the technical requirements, dependencies, and a separate written scope and quote.",
+  },
+  {
+    question: "What if I do not have a finished brief yet?",
+    answer:
+      "That is okay. You can start with the short guided conversation or email us directly; a sentence or two is enough to begin. If you already know more detail, the longer Project Discovery form lets you share goals, services, requirements, and references.",
+  },
+  {
+    question: "When is a project considered booked, and how do we agree the scope?",
+    answer:
+      "An enquiry or discovery request is not a confirmed booking. We first review the context, clarify deliverables and assumptions, then share the agreed fee and scope for approval. Work starts only after the terms are approved; any meeting time is confirmed separately.",
+  },
+  {
+    question: "Are the UX projects in the Work section client projects?",
+    answer:
+      "Each project is labeled with its context. TrailMix is a fictional, self-initiated UX concept—not commissioned client work or a validated product. Umer Mobile Parts is shown separately as a live personal development project; its case study does not claim that a UX process was carried out.",
+  },
+  {
+    question: "Do you work with remote teams?",
+    answer:
+      "Yes. Rapidlyon is remote-first and works with founders and teams in different locations. We can collaborate with your existing product, marketing, and engineering stakeholders around the deliverables agreed for the project.",
   },
 ];
 

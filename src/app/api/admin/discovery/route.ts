@@ -1,21 +1,14 @@
 import { NextResponse } from "next/server";
 import { isDiscoveryAdmin } from "@/lib/discovery-auth";
 import { discoveryStatusSchema } from "@/lib/discovery";
-
-function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return url && serviceRoleKey
-    ? { url: url.replace(/\/+$/, ""), serviceRoleKey }
-    : null;
-}
+import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 export async function GET(request: Request) {
   if (!(await isDiscoveryAdmin())) {
     return NextResponse.json({ success: false, message: "Sign in to view discovery submissions." }, { status: 401 });
   }
 
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
   if (!config) {
     return NextResponse.json({ success: false, message: "Supabase storage is not configured." }, { status: 503 });
   }

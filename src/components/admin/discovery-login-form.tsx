@@ -44,11 +44,11 @@ export function DiscoveryLoginForm() {
           minLength={16}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]"
+          className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink"
         />
       </div>
-      {message ? <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800">{message}</p> : null}
-      <button type="submit" disabled={loading} className="w-full rounded-full bg-[#171916] px-5 py-3 text-sm font-medium text-white disabled:opacity-60">
+      {message ? <p role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm text-danger-deep">{message}</p> : null}
+      <button type="submit" disabled={loading} className="w-full rounded-full bg-ink px-5 py-3 text-sm font-medium text-on-dark disabled:opacity-60">
         {loading ? "Signing in…" : "Sign in"}
       </button>
     </form>

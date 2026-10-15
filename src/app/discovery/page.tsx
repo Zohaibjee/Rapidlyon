@@ -12,25 +12,25 @@ export default function DiscoveryPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      <section className="mb-10 rounded-[28px] bg-[#171916] p-7 text-white sm:p-10 lg:p-12">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-[#B6E76A]">Project discovery</p>
-        <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+      <section className="mb-10 rounded-card bg-ink p-7 text-on-dark sm:p-10 lg:p-12">
+        <p className="text-xs font-medium uppercase tracking-label text-accent">Project discovery</p>
+        <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight tracking-display-tight sm:text-5xl lg:text-6xl">
           Start with the problem. Find the right next step.
         </h1>
-        <p className="mt-5 max-w-3xl text-base leading-8 text-white/75 sm:text-lg">
+        <p className="mt-5 max-w-3xl text-base leading-8 text-on-dark/75 sm:text-lg">
           Tell us about your business, users, and product goals. This guided questionnaire adapts to the services you select and usually takes around 8–12 minutes. You can skip questions you have not decided yet.
         </p>
-        <div className="mt-7 grid gap-4 border-t border-white/15 pt-6 text-sm leading-6 text-white/75 sm:grid-cols-3">
-          <p><strong className="text-white">1. Share context</strong><br />Business, services, and requirements.</p>
-          <p><strong className="text-white">2. Choose a format</strong><br />Self-guided, interview, or walkthrough.</p>
-          <p><strong className="text-white">3. We follow up</strong><br />A request is not a confirmed booking.</p>
+        <div className="mt-7 grid gap-4 border-t border-on-dark/15 pt-6 text-sm leading-6 text-on-dark/75 sm:grid-cols-3">
+          <p><strong className="text-on-dark">1. Share context</strong><br />Business, services, and requirements.</p>
+          <p><strong className="text-on-dark">2. Choose a format</strong><br />Self-guided, interview, or walkthrough.</p>
+          <p><strong className="text-on-dark">3. We follow up</strong><br />A request is not a confirmed booking.</p>
         </div>
       </section>
 
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <DiscoveryForm calendlyUrl={calendlyUrl} />
-        <aside className="rounded-[24px] border border-black/5 bg-white p-6 text-sm leading-6 text-[#4f544d]">
-          <h2 className="text-base font-semibold text-[#171916]">A few helpful notes</h2>
+        <aside className="rounded-panel border border-divider bg-on-dark p-6 text-sm leading-6 text-body">
+          <h2 className="text-base font-semibold text-ink">A few helpful notes</h2>
           <ul className="mt-4 space-y-3">
             <li>Your text answers are saved locally in this browser. Use “Clear saved draft” to remove them; attachments are not saved until final submission.</li>
             <li>Required questions are marked with an asterisk. Estimates and early ideas are welcome.</li>

@@ -148,69 +148,69 @@ export function DiscoveryAdmin() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-[#73776D]">Private · Discovery</p>
+          <p className="text-xs font-medium uppercase tracking-label text-muted">Private · Discovery</p>
           <h1 className="mt-2 text-3xl font-semibold">Project submissions</h1>
-          <p className="mt-2 text-sm text-[#62665e]">Only authenticated administrators can view these client details.</p>
+          <p className="mt-2 text-sm text-body-muted">Only authenticated administrators can view these client details.</p>
         </div>
         <button type="button" onClick={signOut} className="rounded-full border border-black/15 px-4 py-2 text-sm font-medium">Sign out</button>
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)]">
-        <section className="rounded-[24px] border border-black/5 bg-white p-5">
+        <section className="rounded-panel border border-divider bg-on-dark p-5">
           <form onSubmit={(event) => { event.preventDefault(); setLoading(true); setSearch(searchInput.trim()); }} className="flex gap-2">
             <label htmlFor="submission-search" className="sr-only">Search submissions</label>
-            <input id="submission-search" value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="Search name, email, company" className="min-w-0 flex-1 rounded-xl border border-black/10 px-3 py-2 text-sm" />
-            <button className="rounded-xl bg-[#171916] px-4 py-2 text-sm font-medium text-white">Search</button>
+            <input id="submission-search" value={searchInput} onChange={(event) => setSearchInput(event.target.value)} placeholder="Search name, email, company" className="min-w-0 flex-1 rounded-xl border border-divider-strong px-3 py-2 text-sm" />
+            <button className="rounded-xl bg-ink px-4 py-2 text-sm font-medium text-on-dark">Search</button>
           </form>
           <label htmlFor="submission-status-filter" className="sr-only">Filter by status</label>
-          <select id="submission-status-filter" value={statusFilter} onChange={(event) => { setLoading(true); setStatusFilter(event.target.value); }} className="mt-3 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm">
+          <select id="submission-status-filter" value={statusFilter} onChange={(event) => { setLoading(true); setStatusFilter(event.target.value); }} className="mt-3 w-full rounded-xl border border-divider-strong bg-on-dark px-3 py-2 text-sm">
             <option value="">All statuses</option>
             {discoveryStatuses.map((status) => <option key={status}>{status}</option>)}
           </select>
 
-          {loading ? <p className="py-8 text-center text-sm text-[#62665e]">Loading submissions…</p> : null}
+          {loading ? <p className="py-8 text-center text-sm text-body-muted">Loading submissions…</p> : null}
           {!loading && submissions.length === 0 ? (
             <div className="py-10 text-center">
               <p className="font-medium">No discovery submissions found.</p>
-              <p className="mt-2 text-sm text-[#62665e]">New requests will appear here after the database is configured.</p>
+              <p className="mt-2 text-sm text-body-muted">New requests will appear here after the database is configured.</p>
             </div>
           ) : null}
           <ul className="mt-4 divide-y divide-black/10">
             {submissions.map((submission) => (
               <li key={submission.id}>
-                <button type="button" onClick={() => void openSubmission(submission.id)} className={`w-full rounded-xl px-3 py-4 text-left hover:bg-[#F5F5EF] ${selected?.id === submission.id ? "bg-[#F5F5EF]" : ""}`}>
+                <button type="button" onClick={() => void openSubmission(submission.id)} className={`w-full rounded-xl px-3 py-4 text-left hover:bg-paper ${selected?.id === submission.id ? "bg-paper" : ""}`}>
                   <span className="flex items-start justify-between gap-3">
                     <span className="font-semibold">{submission.full_name}</span>
-                    <span className="rounded-full bg-[#EAF3C9] px-2 py-1 text-[10px] font-medium">{submission.status}</span>
+                    <span className="rounded-full bg-accent-soft px-2 py-1 text-caption font-medium">{submission.status}</span>
                   </span>
-                  <span className="mt-1 block truncate text-sm text-[#62665e]">{submission.company} · {submission.email}</span>
-                  <span className="mt-1 block text-xs text-[#73776D]">{dateLabel(submission.created_at)}</span>
+                  <span className="mt-1 block truncate text-sm text-body-muted">{submission.company} · {submission.email}</span>
+                  <span className="mt-1 block text-xs text-muted">{dateLabel(submission.created_at)}</span>
                 </button>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="min-h-96 rounded-[24px] border border-black/5 bg-white p-5 sm:p-7">
-          {detailLoading ? <p className="py-16 text-center text-sm text-[#62665e]">Loading client requirements…</p> : null}
+        <section className="min-h-96 rounded-panel border border-divider bg-on-dark p-5 sm:p-7">
+          {detailLoading ? <p className="py-16 text-center text-sm text-body-muted">Loading client requirements…</p> : null}
           {!detailLoading && !selected ? (
             <div className="flex min-h-80 flex-col items-center justify-center text-center">
               <h2 className="text-xl font-semibold">Select a submission</h2>
-              <p className="mt-2 max-w-sm text-sm leading-6 text-[#62665e]">Client details, project answers, meeting preferences, and private notes will appear here.</p>
+              <p className="mt-2 max-w-sm text-sm leading-6 text-body-muted">Client details, project answers, meeting preferences, and private notes will appear here.</p>
             </div>
           ) : null}
           {selected ? (
             <div>
-              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-black/10 pb-5">
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-divider-strong pb-5">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-[#73776D]">{dateLabel(selected.created_at)}</p>
+                  <p className="text-xs uppercase tracking-label-tight text-muted">{dateLabel(selected.created_at)}</p>
                   <h2 className="mt-2 text-2xl font-semibold">{selected.full_name}</h2>
-                  <p className="mt-1 text-sm text-[#62665e]">{selected.company}</p>
+                  <p className="mt-1 text-sm text-body-muted">{selected.company}</p>
                   <a href={`mailto:${selected.email}`} className="mt-2 inline-block text-sm underline underline-offset-2">{selected.email}</a>
                 </div>
                 <div>
                   <label htmlFor="submission-status" className="mb-1 block text-xs font-medium">Status</label>
-                  <select id="submission-status" value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value as DiscoveryAdminRecord["status"])} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm">
+                  <select id="submission-status" value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value as DiscoveryAdminRecord["status"])} className="rounded-xl border border-divider-strong bg-on-dark px-3 py-2 text-sm">
                     {discoveryStatuses.map((status) => <option key={status}>{status}</option>)}
                   </select>
                 </div>
@@ -218,16 +218,16 @@ export function DiscoveryAdmin() {
 
               <div className="mt-5">
                 <h3 className="text-sm font-semibold">Selected services</h3>
-                <div className="mt-2 flex flex-wrap gap-2">{selected.services.map((service) => <span key={service} className="rounded-full bg-[#F5F5EF] px-3 py-1.5 text-xs">{service}</span>)}</div>
-                <p className="mt-3 text-sm text-[#62665e]">Discovery method: {selected.discovery_method}</p>
+                <div className="mt-2 flex flex-wrap gap-2">{selected.services.map((service) => <span key={service} className="rounded-full bg-paper px-3 py-1.5 text-xs">{service}</span>)}</div>
+                <p className="mt-3 text-sm text-body-muted">Discovery method: {selected.discovery_method}</p>
               </div>
 
               <div className="mt-6">
                 <h3 className="text-sm font-semibold">Client requirements</h3>
-                <dl className="mt-3 divide-y divide-black/5 rounded-xl border border-black/5">
+                <dl className="mt-3 divide-y divide-black/5 rounded-xl border border-divider">
                   {Object.entries(selected.submission).filter(([key]) => !["consent", "idempotencyKey"].includes(key)).map(([key, value]) => (
                     <div key={key} className="grid gap-1 p-3 text-sm sm:grid-cols-[11rem_1fr]">
-                      <dt className="font-medium capitalize text-[#62665e]">{key.replace(/([A-Z])/g, " $1")}</dt>
+                      <dt className="font-medium capitalize text-body-muted">{key.replace(/([A-Z])/g, " $1")}</dt>
                       <dd className="whitespace-pre-wrap break-words">{displayValue(value)}</dd>
                     </div>
                   ))}
@@ -240,28 +240,28 @@ export function DiscoveryAdmin() {
                   <ul className="mt-2 space-y-2">
                     {selected.attachment_paths.map((path) => (
                       <li key={path}>
-                        <button type="button" disabled={attachmentBusy === path} onClick={() => void openAttachment(path)} className="text-sm font-medium text-[#171916] underline underline-offset-4 disabled:opacity-50">
+                        <button type="button" disabled={attachmentBusy === path} onClick={() => void openAttachment(path)} className="text-sm font-medium text-ink underline underline-offset-4 disabled:opacity-50">
                           {attachmentBusy === path ? "Preparing secure link…" : `Open ${path.split("/").at(-1)}`}
                         </button>
                       </li>
                     ))}
                   </ul>
-                ) : <p className="mt-2 text-sm text-[#62665e]">No attachments.</p>}
+                ) : <p className="mt-2 text-sm text-body-muted">No attachments.</p>}
               </div>
 
               <div className="mt-6">
                 <label htmlFor="internal-notes" className="text-sm font-semibold">Private internal notes</label>
-                <textarea id="internal-notes" rows={5} maxLength={10000} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 w-full rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:border-[#171916]" />
-                <button type="button" disabled={saving} onClick={() => void saveUpdates()} className="mt-3 rounded-full bg-[#171916] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">
+                <textarea id="internal-notes" rows={5} maxLength={10000} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 w-full rounded-xl border border-divider-strong px-4 py-3 text-sm outline-none focus:border-ink" />
+                <button type="button" disabled={saving} onClick={() => void saveUpdates()} className="mt-3 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-on-dark disabled:opacity-50">
                   {saving ? "Saving…" : "Save status and notes"}
                 </button>
-                {notice ? <p role="status" className="mt-3 text-sm text-emerald-800">{notice}</p> : null}
+                {notice ? <p role="status" className="mt-3 text-sm text-success-strong">{notice}</p> : null}
               </div>
             </div>
           ) : null}
         </section>
       </div>
-      {error ? <p role="alert" className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</p> : null}
+      {error ? <p role="alert" className="mt-5 rounded-xl border border-danger-line bg-danger-soft p-4 text-sm text-danger-deep">{error}</p> : null}
     </div>
   );
 }

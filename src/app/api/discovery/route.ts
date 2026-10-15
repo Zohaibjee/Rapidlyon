@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/data/site";
 import { discoverySubmissionSchema } from "@/lib/discovery";
+import { getSupabaseServerConfig } from "@/lib/supabase-server";
 
 const maxFileBytes = 5 * 1024 * 1024;
 const maxTotalFileBytes = 15 * 1024 * 1024;
@@ -13,16 +14,8 @@ const allowedFiles = new Map([
   ["image/webp", "webp"],
 ]);
 
-function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return url && serviceRoleKey
-    ? { url: url.replace(/\/+$/, ""), serviceRoleKey }
-    : null;
-}
-
 async function removeUploadedFiles(
-  config: { url: string; serviceRoleKey: string },
+  config: NonNullable<ReturnType<typeof getSupabaseServerConfig>>,
   paths: string[],
 ) {
   if (paths.length === 0) return;
@@ -47,7 +40,7 @@ async function removeUploadedFiles(
 }
 
 export async function POST(request: Request) {
-  const config = getSupabaseConfig();
+  const config = getSupabaseServerConfig();
   if (!config) {
     return NextResponse.json(
       {

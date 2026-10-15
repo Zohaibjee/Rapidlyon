@@ -16,9 +16,9 @@ export function SectionHeading({
   tone = "light",
 }: SectionHeadingProps) {
   const Heading = level;
-  const headingColor = tone === "dark" ? "text-[#F5F5EF]" : "text-[#171916]";
-  const eyebrowColor = tone === "dark" ? "text-[#B6E76A]" : "text-[#73776D]";
-  const descriptionColor = tone === "dark" ? "text-[#d7d9d2]" : "text-[#4a4d45]";
+  const headingColor = tone === "dark" ? "text-paper" : "text-ink";
+  const eyebrowColor = tone === "dark" ? "text-accent" : "text-muted";
+  const descriptionColor = tone === "dark" ? "text-divider-strong" : "text-body-emphasis";
 
   return (
     <div
@@ -29,11 +29,11 @@ export function SectionHeading({
       }
     >
       {eyebrow ? (
-        <p className={`mb-4 text-xs font-medium uppercase tracking-[0.2em] ${eyebrowColor}`}>
+        <p className={`mb-4 text-xs font-medium uppercase tracking-label ${eyebrowColor}`}>
           {eyebrow}
         </p>
       ) : null}
-      <Heading className={`text-3xl font-semibold tracking-[-0.06em] ${headingColor} md:text-5xl`}>
+      <Heading className={`text-3xl font-semibold tracking-display ${headingColor} md:text-5xl`}>
         {title}
       </Heading>
       {description ? (

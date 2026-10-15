@@ -143,8 +143,8 @@ function Field({
   const id = `discovery-${name}`;
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-[#171916]">
-        {label} {optional ? <span className="font-normal text-[#73776D]">(optional)</span> : <span aria-hidden="true">*</span>}
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-ink">
+        {label} {optional ? <span className="font-normal text-muted">(optional)</span> : <span aria-hidden="true">*</span>}
       </label>
       <input
         id={id}
@@ -156,9 +156,9 @@ function Field({
         placeholder={placeholder}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none transition focus:border-[#171916] focus:ring-2 focus:ring-[#B6E76A]/60"
+        className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none transition focus:border-ink focus:ring-2 focus:ring-accent/60"
       />
-      {error ? <p id={`${id}-error`} className="mt-1 text-sm text-red-700">{error}</p> : null}
+      {error ? <p id={`${id}-error`} className="mt-1 text-sm text-danger-strong">{error}</p> : null}
     </div>
   );
 }
@@ -185,10 +185,10 @@ function TextArea({
   const id = `discovery-${name}`;
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-[#171916]">
-        {label} {optional ? <span className="font-normal text-[#73776D]">(optional)</span> : <span aria-hidden="true">*</span>}
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-ink">
+        {label} {optional ? <span className="font-normal text-muted">(optional)</span> : <span aria-hidden="true">*</span>}
       </label>
-      {hint ? <p className="mb-2 text-sm leading-6 text-[#62665e]">{hint}</p> : null}
+      {hint ? <p className="mb-2 text-sm leading-6 text-body-muted">{hint}</p> : null}
       <textarea
         id={id}
         name={name}
@@ -199,9 +199,9 @@ function TextArea({
         onChange={(event) => onChange(name, event.target.value)}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none transition focus:border-[#171916] focus:ring-2 focus:ring-[#B6E76A]/60"
+        className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none transition focus:border-ink focus:ring-2 focus:ring-accent/60"
       />
-      {error ? <p id={`${id}-error`} className="mt-1 text-sm text-red-700">{error}</p> : null}
+      {error ? <p id={`${id}-error`} className="mt-1 text-sm text-danger-strong">{error}</p> : null}
     </div>
   );
 }
@@ -367,41 +367,41 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
 
   if (status === "success") {
     return (
-      <section className="rounded-[28px] border border-emerald-200 bg-emerald-50 p-8" role="status">
-        <div className="flex size-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-800"><Check aria-hidden="true" /></div>
-        <h2 className="mt-5 text-3xl font-semibold text-[#171916]">Thank you. Your discovery request is saved.</h2>
-        <p className="mt-3 max-w-2xl leading-7 text-[#3e5747]">{notice}</p>
-        <p className="mt-3 max-w-2xl leading-7 text-[#3e5747]">We’ll review your details and follow up using the email address you provided. Email notifications are not enabled on this site yet.</p>
+      <section className="rounded-card border border-success-line bg-success-soft p-8" role="status">
+        <div className="flex size-12 items-center justify-center rounded-full bg-success-highlight text-success-strong"><Check aria-hidden="true" /></div>
+        <h2 className="mt-5 text-3xl font-semibold text-ink">Thank you. Your discovery request is saved.</h2>
+        <p className="mt-3 max-w-2xl leading-7 text-success-ink">{notice}</p>
+        <p className="mt-3 max-w-2xl leading-7 text-success-ink">We’ll review your details and follow up using the email address you provided. Email notifications are not enabled on this site yet.</p>
         {form.discoveryMethod !== "Self-guided discovery" && calendlyUrl ? (
-          <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex rounded-full bg-[#171916] px-5 py-3 text-sm font-medium text-white">
+          <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex rounded-full bg-ink px-5 py-3 text-sm font-medium text-on-dark">
             Choose a meeting time
           </a>
         ) : form.discoveryMethod !== "Self-guided discovery" ? (
-          <p className="mt-5 text-sm text-[#3e5747]">Your preferred meeting details have been included in the request; a time has not been booked automatically.</p>
+          <p className="mt-5 text-sm text-success-ink">Your preferred meeting details have been included in the request; a time has not been booked automatically.</p>
         ) : null}
-        <Link href="/" className="mt-6 block text-sm font-medium text-[#171916] underline underline-offset-4">Return to the website</Link>
+        <Link href="/" className="mt-6 block text-sm font-medium text-ink underline underline-offset-4">Return to the website</Link>
       </section>
     );
   }
 
   return (
-    <form onSubmit={submit} noValidate className="rounded-[28px] border border-black/5 bg-white p-5 shadow-[0_18px_50px_rgba(23,25,22,0.05)] sm:p-8">
+    <form onSubmit={submit} noValidate className="rounded-card border border-divider bg-on-dark p-5 shadow-card sm:p-8">
       <div className="mb-8">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-sm font-semibold text-[#171916]">Step {step + 1} of {stepTitles.length}: {currentStepTitle}</p>
-          <div className="flex items-center gap-3 text-xs text-[#62665e]">
+          <p className="text-sm font-semibold text-ink">Step {step + 1} of {stepTitles.length}: {currentStepTitle}</p>
+          <div className="flex items-center gap-3 text-xs text-body-muted">
             <p>{draftMessage}</p>
-            <button type="button" disabled={status === "submitting"} onClick={clearDraft} className="shrink-0 font-medium text-[#171916] underline underline-offset-2 disabled:opacity-50">
+            <button type="button" disabled={status === "submitting"} onClick={clearDraft} className="shrink-0 font-medium text-ink underline underline-offset-2 disabled:opacity-50">
               Clear saved draft
             </button>
           </div>
         </div>
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e7e8e2]" role="progressbar" aria-label="Discovery form progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
-          <div className="h-full rounded-full bg-[#8ab53e] transition-all" style={{ width: `${((step + 1) / stepTitles.length) * 100}%` }} />
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-divider" role="progressbar" aria-label="Discovery form progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
+          <div className="h-full rounded-full bg-accent-strong transition-all" style={{ width: `${((step + 1) / stepTitles.length) * 100}%` }} />
         </div>
         <ol className="mt-4 hidden grid-cols-6 gap-2 sm:grid">
           {stepTitles.map((title, index) => (
-            <li key={title} className={`text-xs ${index === step ? "font-semibold text-[#171916]" : "text-[#73776D]"}`}>
+            <li key={title} className={`text-xs ${index === step ? "font-semibold text-ink" : "text-muted"}`}>
               <span className="mr-1">{index + 1}.</span>{title}
             </li>
           ))}
@@ -412,7 +412,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
         <div className="space-y-5">
           <div>
             <h2 className="text-2xl font-semibold">Tell us about your business</h2>
-            <p className="mt-2 text-sm leading-6 text-[#62665e]">Required fields help us understand who to contact and where your project fits.</p>
+            <p className="mt-2 text-sm leading-6 text-body-muted">Required fields help us understand who to contact and where your project fits.</p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <Field name="fullName" label="Full name" value={form.fullName} onChange={changeField} error={errors.fullName} />
@@ -421,28 +421,28 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
             <Field name="website" label="Company website" optional placeholder="https://" value={form.website} onChange={changeField} error={errors.website} />
             <div>
               <label htmlFor="discovery-country" className="mb-2 block text-sm font-medium">Country <span aria-hidden="true">*</span></label>
-              <select id="discovery-country" required value={form.country} onChange={(event) => changeField("country", event.target.value)} aria-invalid={Boolean(errors.country)} className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]">
+              <select id="discovery-country" required value={form.country} onChange={(event) => changeField("country", event.target.value)} aria-invalid={Boolean(errors.country)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Choose a country</option>
                 {businessCountries.map((country) => <option key={country}>{country}</option>)}
               </select>
-              {errors.country ? <p className="mt-1 text-sm text-red-700">{errors.country}</p> : null}
+              {errors.country ? <p className="mt-1 text-sm text-danger-strong">{errors.country}</p> : null}
             </div>
             <Field name="timeZone" label="Time zone" placeholder="e.g. Europe/London or UTC−5" value={form.timeZone} onChange={changeField} error={errors.timeZone} />
             <div>
               <label htmlFor="discovery-industry" className="mb-2 block text-sm font-medium">Industry <span aria-hidden="true">*</span></label>
-              <select id="discovery-industry" required value={form.industry} onChange={(event) => changeField("industry", event.target.value)} aria-invalid={Boolean(errors.industry)} className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]">
+              <select id="discovery-industry" required value={form.industry} onChange={(event) => changeField("industry", event.target.value)} aria-invalid={Boolean(errors.industry)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Choose an industry</option>
                 {["Technology / SaaS", "E-commerce / Retail", "Healthcare", "Finance", "Education", "Professional services", "Media / Entertainment", "Other"].map((industry) => <option key={industry}>{industry}</option>)}
               </select>
-              {errors.industry ? <p className="mt-1 text-sm text-red-700">{errors.industry}</p> : null}
+              {errors.industry ? <p className="mt-1 text-sm text-danger-strong">{errors.industry}</p> : null}
             </div>
             <div>
               <label htmlFor="discovery-stage" className="mb-2 block text-sm font-medium">Business stage <span aria-hidden="true">*</span></label>
-              <select id="discovery-stage" required value={form.businessStage} onChange={(event) => changeField("businessStage", event.target.value)} aria-invalid={Boolean(errors.businessStage)} className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]">
+              <select id="discovery-stage" required value={form.businessStage} onChange={(event) => changeField("businessStage", event.target.value)} aria-invalid={Boolean(errors.businessStage)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Choose a stage</option>
                 {["Exploring an idea", "Pre-launch / startup", "Established business", "Growing product", "Enterprise / organisation", "Other"].map((stage) => <option key={stage}>{stage}</option>)}
               </select>
-              {errors.businessStage ? <p className="mt-1 text-sm text-red-700">{errors.businessStage}</p> : null}
+              {errors.businessStage ? <p className="mt-1 text-sm text-danger-strong">{errors.businessStage}</p> : null}
             </div>
           </div>
         </div>
@@ -451,20 +451,20 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
       {step === 1 ? (
         <fieldset>
           <legend className="text-2xl font-semibold">Which services would be useful?</legend>
-          <p className="mt-2 text-sm leading-6 text-[#62665e]">Choose all that apply. Your selection shapes the next questions.</p>
-          {errors.services ? <p role="alert" className="mt-3 text-sm text-red-700">{errors.services}</p> : null}
+          <p className="mt-2 text-sm leading-6 text-body-muted">Choose all that apply. Your selection shapes the next questions.</p>
+          {errors.services ? <p role="alert" className="mt-3 text-sm text-danger-strong">{errors.services}</p> : null}
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {discoveryServices.map((service) => {
               const selected = form.services.includes(service);
               return (
-                <label key={service} className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${selected ? "border-[#171916] bg-[#f4f8eb]" : "border-black/10 hover:border-black/25"}`}>
+                <label key={service} className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${selected ? "border-ink bg-accent-pale" : "border-divider-strong hover:border-black/25"}`}>
                   <input type="checkbox" checked={selected} onChange={(event) => {
                     setForm((current) => ({
                       ...current,
                       services: event.target.checked ? [...current.services, service] : current.services.filter((item) => item !== service),
                     }));
                     setErrors((current) => ({ ...current, services: "" }));
-                  }} className="mt-1 size-4 accent-[#171916]" />
+                  }} className="mt-1 size-4 accent-ink" />
                   <span className="text-sm font-medium leading-6">{service}</span>
                 </label>
               );
@@ -477,22 +477,22 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
         <div className="space-y-8">
           <div>
             <h2 className="text-2xl font-semibold">A few questions about your selected services</h2>
-            <p className="mt-2 text-sm leading-6 text-[#62665e]">These are optional. Skip anything you have not decided yet.</p>
+            <p className="mt-2 text-sm leading-6 text-body-muted">These are optional. Skip anything you have not decided yet.</p>
           </div>
-          {groups.length === 0 ? <p className="rounded-xl bg-[#F5F5EF] p-4 text-sm">Select services in the previous step to get tailored questions.</p> : null}
+          {groups.length === 0 ? <p className="rounded-xl bg-paper p-4 text-sm">Select services in the previous step to get tailored questions.</p> : null}
           {groups.map((group) => (
-            <fieldset key={group.title} className="space-y-5 border-t border-black/10 pt-6">
+            <fieldset key={group.title} className="space-y-5 border-t border-divider-strong pt-6">
               <legend className="px-1 text-lg font-semibold">{group.title}</legend>
               {group.questions.map((question) => (
                 <div key={question.key}>
                   {question.options ? (
                     <fieldset>
-                      <legend className="mb-2 text-sm font-medium">{question.label} <span className="font-normal text-[#73776D]">(optional, choose any)</span></legend>
+                      <legend className="mb-2 text-sm font-medium">{question.label} <span className="font-normal text-muted">(optional, choose any)</span></legend>
                       <div className="flex flex-wrap gap-2">
                         {question.options.map((option) => {
                           const selected = Array.isArray(form.answers[question.key]) && (form.answers[question.key] as string[]).includes(option);
                           return (
-                            <label key={option} className={`cursor-pointer rounded-full border px-3 py-2 text-sm ${selected ? "border-[#171916] bg-[#EAF3C9]" : "border-black/10 bg-white"}`}>
+                            <label key={option} className={`cursor-pointer rounded-full border px-3 py-2 text-sm ${selected ? "border-ink bg-accent-soft" : "border-divider-strong bg-on-dark"}`}>
                               <input className="sr-only" type="checkbox" checked={Boolean(selected)} onChange={(event) => toggleChoice(question.key, option, event.target.checked)} />
                               {option}
                             </label>
@@ -514,7 +514,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
         <div className="space-y-5">
           <div>
             <h2 className="text-2xl font-semibold">Project details</h2>
-            <p className="mt-2 text-sm leading-6 text-[#62665e]">Only the project overview is required. Share estimates where you can; “not sure yet” is fine.</p>
+            <p className="mt-2 text-sm leading-6 text-body-muted">Only the project overview is required. Share estimates where you can; “not sure yet” is fine.</p>
           </div>
           <TextArea name="projectOverview" label="Project overview" optional={false} value={form.projectOverview} onChange={changeField} error={errors.projectOverview} hint="What are you building or improving, and what prompted the project?" rows={5} />
           <TextArea name="objectives" label="Business objectives" value={form.objectives} onChange={changeField} hint="What would meaningful progress look like?" />
@@ -522,8 +522,8 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
           <TextArea name="niceToHaveFeatures" label="Nice-to-have features" value={form.niceToHaveFeatures} onChange={changeField} />
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <label htmlFor="discovery-budget" className="mb-2 block text-sm font-medium">Estimated budget <span className="font-normal text-[#73776D]">(optional)</span></label>
-              <select id="discovery-budget" value={form.budget} onChange={(event) => changeField("budget", event.target.value)} className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#171916]">
+              <label htmlFor="discovery-budget" className="mb-2 block text-sm font-medium">Estimated budget <span className="font-normal text-muted">(optional)</span></label>
+              <select id="discovery-budget" value={form.budget} onChange={(event) => changeField("budget", event.target.value)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Not sure yet</option>
                 {["Under $5,000", "$5,000–$15,000", "$15,000–$30,000", "$30,000–$60,000", "$60,000+", "Prefer to discuss"].map((value) => <option key={value}>{value}</option>)}
               </select>
@@ -533,8 +533,8 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
           <Field name="productUrl" label="Existing product or website URL" optional placeholder="https://" value={form.productUrl} onChange={changeField} />
           <TextArea name="competitorReferences" label="Competitor or inspiration references" value={form.competitorReferences} onChange={changeField} />
           <div>
-            <label htmlFor="discovery-attachments" className="mb-2 block text-sm font-medium">Attachments <span className="font-normal text-[#73776D]">(optional)</span></label>
-            <p className="mb-3 text-sm leading-6 text-[#62665e]">Attach up to 3 PDF, JPG, PNG, or WebP files, 5 MB each. Files are uploaded to private storage with your submission. Attachments are not saved in your browser draft.</p>
+            <label htmlFor="discovery-attachments" className="mb-2 block text-sm font-medium">Attachments <span className="font-normal text-muted">(optional)</span></label>
+            <p className="mb-3 text-sm leading-6 text-body-muted">Attach up to 3 PDF, JPG, PNG, or WebP files, 5 MB each. Files are uploaded to private storage with your submission. Attachments are not saved in your browser draft.</p>
             <label htmlFor="discovery-attachments" className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/15 px-4 py-2.5 text-sm font-medium hover:border-black/35">
               <FileUp size={16} aria-hidden="true" /> Choose files
             </label>
@@ -544,13 +544,13 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
               setFiles(selected.slice(0, 3));
               event.target.value = "";
             }} />
-            {fileNotice ? <p className="mt-2 text-sm text-amber-800">{fileNotice}</p> : null}
+            {fileNotice ? <p className="mt-2 text-sm text-warning-deep">{fileNotice}</p> : null}
             {files.length > 0 ? (
               <ul className="mt-3 space-y-2">
                 {files.map((file, index) => (
-                  <li key={`${file.name}-${index}`} className="flex items-center justify-between gap-3 rounded-lg bg-[#F5F5EF] px-3 py-2 text-sm">
+                  <li key={`${file.name}-${index}`} className="flex items-center justify-between gap-3 rounded-lg bg-paper px-3 py-2 text-sm">
                     <span className="truncate">{file.name} · {(file.size / 1024 / 1024).toFixed(1)} MB</span>
-                    <button type="button" aria-label={`Remove ${file.name}`} onClick={() => setFiles((current) => current.filter((_, fileIndex) => fileIndex !== index))} className="shrink-0 text-[#73776D] hover:text-red-700"><Trash2 size={16} /></button>
+                    <button type="button" aria-label={`Remove ${file.name}`} onClick={() => setFiles((current) => current.filter((_, fileIndex) => fileIndex !== index))} className="shrink-0 text-muted hover:text-danger-strong"><Trash2 size={16} /></button>
                   </li>
                 ))}
               </ul>
@@ -562,17 +562,17 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
       {step === 4 ? (
         <fieldset>
           <legend className="text-2xl font-semibold">How would you like to work through discovery?</legend>
-          <p className="mt-2 text-sm leading-6 text-[#62665e]">A request is not a confirmed booking. We will coordinate the next step by email.</p>
+          <p className="mt-2 text-sm leading-6 text-body-muted">A request is not a confirmed booking. We will coordinate the next step by email.</p>
           <div className="mt-6 space-y-3">
             {[
               { title: "Self-Guided Discovery", value: "Self-guided discovery", detail: "Complete this questionnaire at your own pace. We will review it and follow up." },
               { title: "Discovery Interview", value: "Discovery interview", detail: "Request a two-way conversation about your business, goals, and requirements." },
               { title: "Live Demo or Product Walkthrough", value: "Live demo or product walkthrough", detail: "Request a walkthrough of an existing website, app, product, or prototype." },
             ].map((method) => (
-              <label key={method.value} className={`block cursor-pointer rounded-2xl border p-5 ${form.discoveryMethod === method.value ? "border-[#171916] bg-[#f4f8eb]" : "border-black/10"}`}>
+              <label key={method.value} className={`block cursor-pointer rounded-2xl border p-5 ${form.discoveryMethod === method.value ? "border-ink bg-accent-pale" : "border-divider-strong"}`}>
                 <span className="flex items-start gap-3">
-                  <input type="radio" name="discoveryMethod" value={method.value} checked={form.discoveryMethod === method.value} onChange={(event) => changeField("discoveryMethod", event.target.value)} className="mt-1 accent-[#171916]" />
-                  <span><span className="font-semibold">{method.title}</span><span className="mt-1 block text-sm leading-6 text-[#62665e]">{method.detail}</span></span>
+                  <input type="radio" name="discoveryMethod" value={method.value} checked={form.discoveryMethod === method.value} onChange={(event) => changeField("discoveryMethod", event.target.value)} className="mt-1 accent-ink" />
+                  <span><span className="font-semibold">{method.title}</span><span className="mt-1 block text-sm leading-6 text-body-muted">{method.detail}</span></span>
                 </span>
               </label>
             ))}
@@ -580,7 +580,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
           {form.discoveryMethod !== "Self-guided discovery" ? (
             <div className="mt-6">
               <TextArea name="preferredTimes" label="Preferred days / times and time zone" hint={`Your time zone: ${form.timeZone || "not specified"}. Please include a few options that work for you.`} value={form.preferredTimes} onChange={changeField} />
-              {calendlyUrl ? <p className="mt-3 text-sm text-[#62665e]">After your request is submitted, you can also choose a time using our scheduling link.</p> : null}
+              {calendlyUrl ? <p className="mt-3 text-sm text-body-muted">After your request is submitted, you can also choose a time using our scheduling link.</p> : null}
             </div>
           ) : null}
         </fieldset>
@@ -590,7 +590,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl font-semibold">Review your discovery request</h2>
-            <p className="mt-2 text-sm leading-6 text-[#62665e]">Use Edit to return to any section before you submit.</p>
+            <p className="mt-2 text-sm leading-6 text-body-muted">Use Edit to return to any section before you submit.</p>
           </div>
           {[
             { title: "Business information", step: 0, entries: [["Name", form.fullName], ["Email", form.email], ["Company", form.company], ["Website", form.website], ["Country / time zone", `${form.country} · ${form.timeZone}`], ["Industry / stage", `${form.industry} · ${form.businessStage}`]] },
@@ -599,7 +599,7 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
             { title: "Project details", step: 3, entries: [["Overview", form.projectOverview], ["Objectives", form.objectives], ["Must-have", form.mustHaveFeatures], ["Nice-to-have", form.niceToHaveFeatures], ["Budget / timeline", `${form.budget || "Not specified"} · ${form.timeline || "Not specified"}`], ["Existing URL", form.productUrl], ["References", form.competitorReferences], ["Attachments", files.map((file) => file.name).join(", ") || "None"]] },
             { title: "Discovery method", step: 4, entries: [["Method", form.discoveryMethod], ["Preferred times", form.preferredTimes]] },
           ].map((section) => (
-            <section key={section.title} className="rounded-2xl border border-black/10 p-5">
+            <section key={section.title} className="rounded-2xl border border-divider-strong p-5">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="font-semibold">{section.title}</h3>
                 <button type="button" onClick={() => setStep(section.step)} className="text-sm font-medium underline underline-offset-4">Edit</button>
@@ -607,41 +607,41 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
               <dl className="mt-4 space-y-3">
                 {section.entries.filter((entry) => isFilled(entry[1] as string | string[])).map(([label, value]) => (
                   <div key={label} className="grid gap-1 text-sm sm:grid-cols-[10rem_1fr]">
-                    <dt className="font-medium text-[#62665e]">{label}</dt>
+                    <dt className="font-medium text-body-muted">{label}</dt>
                     <dd className="whitespace-pre-wrap break-words">{Array.isArray(value) ? value.join(", ") : value}</dd>
                   </div>
                 ))}
               </dl>
             </section>
           ))}
-          <label className="flex items-start gap-3 rounded-xl bg-[#F5F5EF] p-4 text-sm leading-6">
+          <label className="flex items-start gap-3 rounded-xl bg-paper p-4 text-sm leading-6">
             <input type="checkbox" checked={form.consent} onChange={(event) => {
               setForm((current) => ({ ...current, consent: event.target.checked }));
               setErrors((current) => ({ ...current, consent: "" }));
-            }} className="mt-1 size-4 accent-[#171916]" />
+            }} className="mt-1 size-4 accent-ink" />
             <span>I agree that Rapidlyon may use these details and any attachments to assess and respond to my project request, as described in the <Link href="/privacy" className="underline underline-offset-2">Privacy Policy</Link>. <span aria-hidden="true">*</span></span>
           </label>
-          {errors.consent ? <p role="alert" className="text-sm text-red-700">{errors.consent}</p> : null}
-          <p className="text-sm leading-6 text-[#62665e]">After submission, the team will review your answers and contact you by email. Email notifications are not yet configured; meeting requests are not bookings unless a configured scheduling link is provided.</p>
+          {errors.consent ? <p role="alert" className="text-sm text-danger-strong">{errors.consent}</p> : null}
+          <p className="text-sm leading-6 text-body-muted">After submission, the team will review your answers and contact you by email. Email notifications are not yet configured; meeting requests are not bookings unless a configured scheduling link is provided.</p>
         </div>
       ) : null}
 
       {notice ? (
-        <p className={`mt-6 rounded-xl px-4 py-3 text-sm ${status === "error" || (Object.keys(errors).length > 0) ? "border border-red-200 bg-red-50 text-red-800" : "border border-black/5 bg-[#F5F5EF] text-[#171916]"}`} role={status === "error" || Object.keys(errors).length > 0 ? "alert" : "status"} aria-live={status === "error" || Object.keys(errors).length > 0 ? "assertive" : "polite"}>
+        <p className={`mt-6 rounded-xl px-4 py-3 text-sm ${status === "error" || (Object.keys(errors).length > 0) ? "border border-danger-line bg-danger-soft text-danger-deep" : "border border-divider bg-paper text-ink"}`} role={status === "error" || Object.keys(errors).length > 0 ? "alert" : "status"} aria-live={status === "error" || Object.keys(errors).length > 0 ? "assertive" : "polite"}>
           {notice}
         </p>
       ) : null}
 
-      <div className="mt-8 flex flex-col-reverse justify-between gap-3 border-t border-black/10 pt-6 sm:flex-row">
+      <div className="mt-8 flex flex-col-reverse justify-between gap-3 border-t border-divider-strong pt-6 sm:flex-row">
         <button type="button" disabled={step === 0 || status === "submitting"} onClick={() => { setNotice(""); setStep((current) => Math.max(0, current - 1)); }} className="inline-flex items-center justify-center gap-2 rounded-full border border-black/15 px-5 py-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40">
           <ArrowLeft size={16} aria-hidden="true" /> Back
         </button>
         {step < stepTitles.length - 1 ? (
-          <button type="button" onClick={nextStep} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#171916] px-6 py-3 text-sm font-medium text-white hover:bg-[#30332e]">
+          <button type="button" onClick={nextStep} className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-on-dark hover:bg-charcoal">
             Continue <ArrowRight size={16} aria-hidden="true" />
           </button>
         ) : (
-          <button type="submit" disabled={status === "submitting"} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#171916] px-6 py-3 text-sm font-medium text-white hover:bg-[#30332e] disabled:cursor-wait disabled:opacity-60">
+          <button type="submit" disabled={status === "submitting"} className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-on-dark hover:bg-charcoal disabled:cursor-wait disabled:opacity-60">
             {status === "submitting" ? "Submitting…" : "Submit discovery request"}
           </button>
         )}
