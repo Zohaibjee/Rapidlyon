@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, MessageCircle, RotateCcw } from "lucide-react";
 import { inquirySchema } from "@/lib/validation";
 
 const serviceChoices = [
-  "UX/UI Design",
-  "Web Development",
+  "UX/UI & Product Design",
+  "Website Development",
+  "SEO & Website Optimization",
   "Design + Development",
-  "SaaS & MVP",
   "Not sure yet",
 ] as const;
 
@@ -41,6 +41,7 @@ export function ConversationChat() {
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
+  const requestInFlight = useRef(false);
 
   const update = (field: keyof Conversation, value: string) => {
     setConversation((current) => ({ ...current, [field]: value }));
@@ -62,6 +63,8 @@ export function ConversationChat() {
   };
 
   const submit = async () => {
+    if (requestInFlight.current) return;
+
     const description = [
       `How can we help?\n${conversation.projectDescription.trim()}`,
       conversation.outcome.trim() ? `What would help most?\n${conversation.outcome.trim()}` : "",
@@ -83,13 +86,14 @@ export function ConversationChat() {
       return;
     }
 
+    requestInFlight.current = true;
     setStatus("loading");
     setError("");
     try {
       const response = await fetch("/api/inquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload.data),
+        body: JSON.stringify({ ...payload.data, companyWebsite: "" }),
       });
       const result = await response.json();
       if (!response.ok || result?.success !== true) {
@@ -99,6 +103,8 @@ export function ConversationChat() {
     } catch (submitError) {
       setStatus("error");
       setError(submitError instanceof Error ? submitError.message : "Your message could not be sent.");
+    } finally {
+      requestInFlight.current = false;
     }
   };
 

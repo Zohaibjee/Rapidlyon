@@ -77,7 +77,7 @@ export default function HomePage() {
               A small independent studio, close to the work.
             </h2>
             <p className="mt-4 text-sm leading-7 text-on-dark/75">
-              Rapidlyon brings UX thinking, interface design, and web development together. We keep the conversation direct, make decisions visible, and agree on the work before moving into delivery.
+              Rapidlyon connects discovery and research to product design, website development, and optimization. We make decisions visible and agree the work before delivery begins.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {["Independent studio", "Design and engineering", "Remote-first"].map((item) => (

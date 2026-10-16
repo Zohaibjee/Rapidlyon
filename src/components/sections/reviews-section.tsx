@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
 import { publishedReviewSchema, reviewSchema, type PublishedReview, type ReviewFormValues } from "@/lib/review-validation";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -18,6 +18,7 @@ export function ReviewsSection() {
   const [status, setStatus] = useState<ReviewStatus>("idle");
   const [message, setMessage] = useState("");
   const [honeypot, setHoneypot] = useState("");
+  const requestInFlight = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -78,6 +79,7 @@ export function ReviewsSection() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (requestInFlight.current) return;
     const parsed = reviewSchema.safeParse(values);
 
     if (!parsed.success) {
@@ -92,6 +94,7 @@ export function ReviewsSection() {
       return;
     }
 
+    requestInFlight.current = true;
     setStatus("loading");
     setMessage("Sending your review...");
 
@@ -114,6 +117,8 @@ export function ReviewsSection() {
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Your review could not be submitted.");
+    } finally {
+      requestInFlight.current = false;
     }
   };
 

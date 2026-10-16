@@ -11,6 +11,8 @@ type RateLimitResult =
   | { allowed: true; configured: boolean }
   | { allowed: false; unavailable: boolean; retryAfter?: number };
 
+let missingProductionConfigurationReported = false;
+
 function requestIdentity(request: Request) {
   return (
     request.headers.get("cf-connecting-ip") ||
@@ -28,7 +30,13 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const endpoint = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!endpoint && !token) return { allowed: true, configured: false };
+  if (!endpoint && !token) {
+    if (process.env.NODE_ENV === "production" && !missingProductionConfigurationReported) {
+      console.warn("Upstash rate limiting is not configured. Ensure equivalent trusted hosting-edge limits are active.");
+      missingProductionConfigurationReported = true;
+    }
+    return { allowed: true, configured: false };
+  }
   if (!endpoint || !token) return { allowed: false, unavailable: true };
 
   try {

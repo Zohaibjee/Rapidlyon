@@ -13,12 +13,12 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Rapidlyon | Design with purpose. Build for impact.",
+    default: "Rapidlyon | We turn ideas into digital products.",
     template: "%s | Rapidlyon",
   },
   description: siteConfig.description,
   openGraph: {
-    title: "Rapidlyon | Design with purpose. Build for impact.",
+    title: "Rapidlyon | Digital product design and development",
     description: siteConfig.description,
     siteName: "Rapidlyon",
     locale: "en_US",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rapidlyon | Design with purpose. Build for impact.",
+    title: "Rapidlyon | Digital product design and development",
     description: siteConfig.description,
   },
 };

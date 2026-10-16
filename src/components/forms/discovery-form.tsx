@@ -427,7 +427,6 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
               Clear saved draft
             </button>
           </div>
-          <TextArea name="businessModel" label="How does the business create value or earn revenue?" value={form.businessModel} onChange={changeField} hint="Optional. For example, subscriptions, product sales, services, or a marketplace." rows={3} />
         </div>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-divider" role="progressbar" aria-label="Discovery form progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
           <div className="h-full rounded-full bg-accent-strong transition-all" style={{ width: `${((step + 1) / stepTitles.length) * 100}%` }} />
@@ -454,30 +453,31 @@ export function DiscoveryForm({ calendlyUrl = "" }: { calendlyUrl?: string }) {
             <Field name="website" label="Company website" optional placeholder="https://" value={form.website} onChange={changeField} error={errors.website} />
             <div>
               <label htmlFor="discovery-country" className="mb-2 block text-sm font-medium">Country <span aria-hidden="true">*</span></label>
-              <select id="discovery-country" required value={form.country} onChange={(event) => changeField("country", event.target.value)} aria-invalid={Boolean(errors.country)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
+              <select id="discovery-country" required value={form.country} onChange={(event) => changeField("country", event.target.value)} aria-invalid={Boolean(errors.country)} aria-describedby={errors.country ? "discovery-country-error" : undefined} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Choose a country</option>
                 {businessCountries.map((country) => <option key={country}>{country}</option>)}
               </select>
-              {errors.country ? <p className="mt-1 text-sm text-danger-strong">{errors.country}</p> : null}
+              {errors.country ? <p id="discovery-country-error" className="mt-1 text-sm text-danger-strong">{errors.country}</p> : null}
             </div>
             <Field name="timeZone" label="Time zone" placeholder="e.g. Europe/London or UTC−5" value={form.timeZone} onChange={changeField} error={errors.timeZone} />
             <div>
               <label htmlFor="discovery-industry" className="mb-2 block text-sm font-medium">Industry <span aria-hidden="true">*</span></label>
-              <select id="discovery-industry" required value={form.industry} onChange={(event) => changeField("industry", event.target.value)} aria-invalid={Boolean(errors.industry)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
+              <select id="discovery-industry" required value={form.industry} onChange={(event) => changeField("industry", event.target.value)} aria-invalid={Boolean(errors.industry)} aria-describedby={errors.industry ? "discovery-industry-error" : undefined} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Choose an industry</option>
                 {["Technology / SaaS", "E-commerce / Retail", "Healthcare", "Finance", "Education", "Professional services", "Media / Entertainment", "Other"].map((industry) => <option key={industry}>{industry}</option>)}
               </select>
-              {errors.industry ? <p className="mt-1 text-sm text-danger-strong">{errors.industry}</p> : null}
+              {errors.industry ? <p id="discovery-industry-error" className="mt-1 text-sm text-danger-strong">{errors.industry}</p> : null}
             </div>
             <div>
               <label htmlFor="discovery-stage" className="mb-2 block text-sm font-medium">Business stage <span aria-hidden="true">*</span></label>
-              <select id="discovery-stage" required value={form.businessStage} onChange={(event) => changeField("businessStage", event.target.value)} aria-invalid={Boolean(errors.businessStage)} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
+              <select id="discovery-stage" required value={form.businessStage} onChange={(event) => changeField("businessStage", event.target.value)} aria-invalid={Boolean(errors.businessStage)} aria-describedby={errors.businessStage ? "discovery-stage-error" : undefined} className="w-full rounded-xl border border-divider-strong bg-on-dark px-4 py-3 outline-none focus:border-ink">
                 <option value="">Choose a stage</option>
                 {["Exploring an idea", "Pre-launch / startup", "Established business", "Growing product", "Enterprise / organisation", "Other"].map((stage) => <option key={stage}>{stage}</option>)}
               </select>
-              {errors.businessStage ? <p className="mt-1 text-sm text-danger-strong">{errors.businessStage}</p> : null}
+              {errors.businessStage ? <p id="discovery-stage-error" className="mt-1 text-sm text-danger-strong">{errors.businessStage}</p> : null}
             </div>
           </div>
+          <TextArea name="businessModel" label="How does the business create value or earn revenue?" value={form.businessModel} onChange={changeField} hint="Optional. For example, subscriptions, product sales, services, or a marketplace." rows={3} />
         </div>
       ) : null}
 

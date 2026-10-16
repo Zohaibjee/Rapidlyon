@@ -33,8 +33,8 @@ export function ContactEnquiry() {
     services.some((item) => item.title === projectServiceName),
   );
   const serviceValue = service?.title || projectService || (
-    mode === "design" ? "UX/UI Design"
-      : mode === "development" ? "Web Development"
+    mode === "design" ? "UX/UI & Product Design"
+      : mode === "development" ? "Website Development"
         : mode === "bundle" ? "Design + Development"
           : undefined
   );

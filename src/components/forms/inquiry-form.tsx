@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { services, type Project, type Service } from "@/data/site";
 import { inquirySchema, type InquiryFormValues } from "@/lib/validation";
 
@@ -14,7 +14,9 @@ const initialValues: InquiryFormValues = {
   timeline: "",
 };
 
-const serviceOptions = services.map((service) => service.title);
+const primaryServiceSlugs = new Set(["ux-ui-design", "web-development", "seo-website-optimization"]);
+const primaryServiceOptions = services.filter((service) => primaryServiceSlugs.has(service.slug));
+const capabilityOptions = services.filter((service) => !primaryServiceSlugs.has(service.slug));
 
 export type InquiryIntent = "general" | "conversation" | "service" | "pricing" | "project";
 type InquiryMode = "design" | "development" | "bundle";
@@ -116,7 +118,7 @@ export function InquiryForm({
     : intent === "pricing"
       ? customScope
         ? "Share the requirements that fall outside the listed packages so we can understand the right discovery and scoping step."
-        : `Share what you need from the ${tier ? `${tier} ` : ""}${mode === "design" ? "UX Design" : mode === "development" ? "Development" : mode === "bundle" ? "Design + Development" : "project"} scope.`
+        : `Share what you need from the ${tier ? `${tier} ` : ""}${mode === "design" ? "UX/UI & Product Design" : mode === "development" ? "Website Development" : mode === "bundle" ? "Design + Development" : "project"} scope.`
       : intent === "project"
         ? "The questions below use this case study as context, without assuming your project is the same."
         : "A few details are enough to start. For a larger brief, you can use the guided project discovery form.";
@@ -129,6 +131,7 @@ export function InquiryForm({
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [honeypot, setHoneypot] = useState("");
+  const requestInFlight = useRef(false);
 
   const isReady = useMemo(() => Object.keys(errors).length === 0, [errors]);
 
@@ -149,6 +152,7 @@ export function InquiryForm({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (requestInFlight.current) return;
     const contextDescription = contextQuestions
       .map((question) => {
         const answer = contextValues[question.name]?.trim();
@@ -197,6 +201,7 @@ export function InquiryForm({
       return;
     }
 
+    requestInFlight.current = true;
     setStatus("loading");
     setMessage("Sending your project details...");
 
@@ -228,6 +233,8 @@ export function InquiryForm({
           ? error.message
           : "Something went wrong while sending the inquiry.",
       );
+        } finally {
+          requestInFlight.current = false;
     }
   };
 
@@ -244,7 +251,7 @@ export function InquiryForm({
           ) : tier ? (
             <span><strong className="text-ink">Package:</strong> {tier}</span>
           ) : null}
-          <span><strong className="text-ink">Service:</strong> {mode === "design" ? "UX Design" : mode === "development" ? "Development" : mode === "bundle" ? "Design + Development" : "To be confirmed"}</span>
+          <span><strong className="text-ink">Service:</strong> {mode === "design" ? "UX/UI & Product Design" : mode === "development" ? "Website Development" : mode === "bundle" ? "Design + Development" : "To be confirmed"}</span>
           {pageCount ? <span><strong className="text-ink">Estimated pages:</strong> {pageCount}</span> : null}
         </div>
       ) : null}
@@ -277,10 +284,14 @@ export function InquiryForm({
               <label htmlFor="service" className="mb-2 block text-sm font-medium text-ink">Requested service <span aria-hidden="true">*</span></label>
               <select id="service" name="service" required aria-required="true" aria-invalid={Boolean(errors.service)} aria-describedby={errors.service ? "service-error" : undefined} value={values.service} onChange={handleChange} className="w-full rounded-xl border border-divider-strong bg-surface-soft px-4 py-3 outline-none transition focus:border-ink">
                 <option value="">Select a service</option>
-                <option value="Design + Development">Design + Development</option>
-                {serviceOptions.map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
+                <optgroup label="Primary services">
+                  {primaryServiceOptions.map((serviceOption) => <option key={serviceOption.slug} value={serviceOption.title}>{serviceOption.title}</option>)}
+                  <option value="Design + Development">Design + Development</option>
+                </optgroup>
+                <optgroup label="Capabilities and project types">
+                  {capabilityOptions.map((serviceOption) => <option key={serviceOption.slug} value={serviceOption.title}>{serviceOption.title}</option>)}
+                </optgroup>
+                <option value="Not sure yet">Not sure yet</option>
               </select>
               {errors.service ? <p id="service-error" className="mt-1 text-sm text-danger">{errors.service}</p> : null}
             </>

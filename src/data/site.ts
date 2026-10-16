@@ -24,7 +24,7 @@ export const siteConfig = {
   description: "Rapidlyon turns ideas into digital products through discovery, research, UX, design, development, and launch.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://rapidlyon.com",
   email: "hello@rapidlyon.com",
-  address: "Remote-first studio working with founders and teams worldwide.",
+  address: "Remote-first studio; project fit and working hours are confirmed during discovery.",
   navigation: [
     { label: "Work", href: "/work" },
     { label: "Services", href: "/services" },
@@ -38,7 +38,7 @@ export const siteConfig = {
 export const services: Service[] = [
   {
     slug: "ux-ui-design",
-    title: "UX/UI Design",
+    title: "UX/UI & Product Design",
     eyebrow: "Human-centered design",
     short: "Research, systems, and product clarity that turn complexity into intuitive experiences.",
     description:
@@ -64,7 +64,7 @@ export const services: Service[] = [
   },
   {
     slug: "web-development",
-    title: "Web Development",
+    title: "Website Development",
     eyebrow: "Responsive implementation",
     short: "Modern websites built for clarity, performance, accessibility, and long-term maintainability.",
     description:
@@ -208,7 +208,7 @@ export const featuredProjects: Project[] = [
     role: "Independent personal project",
     clientOrContext: "Independent personal project for a mobile-parts retailer",
     visibilityLabel: "Live personal project",
-    services: ["E-commerce", "Web Development"],
+    services: ["E-commerce", "Website Development"],
     objective: "Help shoppers find mobile spare parts through product categories, mobile brands, and model-specific product listings.",
     context: "The storefront serves both wholesale and retail visitors looking for mobile repair parts. The public experience presents product discovery and retailer messaging.",
     challenge: "Present a broad mobile-parts catalog with recognizable routes into search, part categories, and mobile-brand or model listings.",
@@ -474,7 +474,7 @@ export const insights = [
 ];
 
 export const seoDefaults = {
-  title: "Rapidlyon | Design with purpose. Build for impact.",
+  title: "Rapidlyon | We turn ideas into digital products.",
   description: siteConfig.description,
 };
 
